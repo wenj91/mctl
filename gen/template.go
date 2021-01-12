@@ -35,7 +35,7 @@ const (
 	mapperTemplateFile                    = "mapper.tpl"
 	modelMethodTemplateFile               = "model-method.tpl"
 	tagTemplateFile                       = "tag.tpl"
-	baseTemplateFile                      = "base.tpl"
+	baseColumnTemplateFile                = "base-column.tpl"
 	typesTemplateFile                     = "types.tpl"
 	updateSelectiveTemplateFile           = "update-selective.tpl"
 	updateSelectiveMethodTemplateFile     = "interface-update-selective.tpl"
@@ -74,7 +74,7 @@ var templates = map[string]string{
 	modelMethodTemplateFile:               template.Method,
 	mapperTemplateFile:                    template.Mapper,
 	tagTemplateFile:                       template.Tag,
-	baseTemplateFile:                      template.Base,
+	baseColumnTemplateFile:                template.BaseColumn,
 	typesTemplateFile:                     template.Types,
 	updateSelectiveTemplateFile:           template.UpdateSelective,
 	updateSelectiveMethodTemplateFile:     template.UpdateSelectiveMethod,

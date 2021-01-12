@@ -92,29 +92,6 @@ func genFindOneByField(table Table, withCache bool) (*findOneCode, error) {
 		listMethod = append(listMethod, output.String())
 	}
 
-	if withCache {
-		text, err := util.LoadTemplate(category, findOneByFieldExtraMethodTemplateFile, template.FindOneByFieldExtraMethod)
-		if err != nil {
-			return nil, err
-		}
-
-		out, err := util.With("findOneByFieldExtraMethod").Parse(text).Execute(map[string]interface{}{
-			"upperStartCamelObject": camelTableName,
-			"primaryKeyLeft":        table.CacheKey[table.PrimaryKey.Name.Source()].Left,
-			"lowerStartCamelObject": stringx.From(camelTableName).Untitle(),
-			"originalPrimaryField":  wrapWithRawString(table.PrimaryKey.Name.Source()),
-		})
-		if err != nil {
-			return nil, err
-		}
-
-		return &findOneCode{
-			findOneMethod:          strings.Join(list, util.NL),
-			findOneInterfaceMethod: strings.Join(listMethod, util.NL),
-			cacheExtra:             out.String(),
-		}, nil
-	}
-
 	return &findOneCode{
 		findOneMethod:          strings.Join(list, util.NL),
 		findOneMapper:          strings.Join(mapperList, util.NL),

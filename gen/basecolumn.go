@@ -13,7 +13,7 @@ func genBaseColumn(table Table, withCache bool) (string, error) {
 		platformFieldNames = append(platformFieldNames, filed.Name.Source())
 	}
 
-	text, err := util.LoadTemplate(category, baseTemplateFile, template.Base)
+	text, err := util.LoadTemplate(category, baseColumnTemplateFile, template.BaseColumn)
 	if err != nil {
 		return "", err
 	}
