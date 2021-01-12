@@ -9,7 +9,7 @@ import (
 	"github.com/wenj91/model/template"
 )
 
-func genInsertSelective(table Table, withCache bool) (string, string, error) {
+func genUpdateSelective(table Table, withCache bool) (string, string, error) {
 	keySet := collection.NewSet()
 	keyVariableSet := collection.NewSet()
 	for fieldName, key := range table.CacheKey {
@@ -37,12 +37,12 @@ func genInsertSelective(table Table, withCache bool) (string, string, error) {
 	}
 
 	camel := table.Name.ToCamel()
-	text, err := util.LoadTemplate(category, insertSelectiveTemplateFile, template.InsertSelective)
+	text, err := util.LoadTemplate(category, updateSelectiveTemplateFile, template.UpdateSelective)
 	if err != nil {
 		return "", "", err
 	}
 
-	output, err := util.With("insertSelective").
+	output, err := util.With("updateSelective").
 		Parse(text).
 		Execute(map[string]interface{}{
 			"withCache":             withCache,
@@ -59,12 +59,12 @@ func genInsertSelective(table Table, withCache bool) (string, string, error) {
 	}
 
 	// interface method
-	text, err = util.LoadTemplate(category, insertSelectiveMethodTemplateFile, template.InsertSelectiveMethod)
+	text, err = util.LoadTemplate(category, updateSelectiveMethodTemplateFile, template.UpdateSelectiveMethod)
 	if err != nil {
 		return "", "", err
 	}
 
-	insertMethodOutput, err := util.With("insertSelectiveMethod").
+	updateMethodOutput, err := util.With("updateSelectiveMethod").
 		Parse(text).
 		Execute(map[string]interface{}{
 			"upperStartCamelObject": camel,
@@ -73,5 +73,5 @@ func genInsertSelective(table Table, withCache bool) (string, string, error) {
 		return "", "", err
 	}
 
-	return output.String(), insertMethodOutput.String(), nil
+	return output.String(), updateMethodOutput.String(), nil
 }

@@ -7,6 +7,13 @@ func (m *default{{.upperStartCamelObject}}Model) Update(conn gobatis.GoBatis, da
 }
 `
 
+var UpdateSelective = `
+func (m *default{{.upperStartCamelObject}}Model) UpdateSelective(conn gobatis.GoBatis, data *{{.upperStartCamelObject}}) (affected int64, err error) {
+	affected, err = conn.Update(m.method("updateSelective"), data)
+	return
+}
+`
+
 var UpdateFieldValue = `{{.field}} = #{{print "{" .value print "}"}}`
 
 var UpdateIfFieldValue = `      <if test="{{.value}} != nil and {{.value}} != ''">
@@ -30,3 +37,4 @@ var UpdateMapper = `
 `
 
 var UpdateMethod = `Update(conn gobatis.GoBatis, data *{{.upperStartCamelObject}}) (affected int64, err error) `
+var UpdateSelectiveMethod = `UpdateSelective(conn gobatis.GoBatis, data *{{.upperStartCamelObject}}) (affected int64, err error) `

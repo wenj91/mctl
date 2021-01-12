@@ -7,7 +7,7 @@ import (
 	"github.com/wenj91/model/template"
 )
 
-func genBase(table Table, withCache bool) (string, error) {
+func genBaseColumn(table Table, withCache bool) (string, error) {
 	platformFieldNames := make([]string, 0)
 	for _, filed := range table.Fields {
 		platformFieldNames = append(platformFieldNames, filed.Name.Source())

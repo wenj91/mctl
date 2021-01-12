@@ -25,7 +25,7 @@ const (
 	importsWithNoCacheTemplateFile        = "import-no-cache.tpl"
 	insertTemplateFile                    = "insert.tpl"
 	insertSelectiveTemplateFile           = "insert-selective.tpl"
-	insertSelectiveTemplateMethodFile     = "interface-insert-selective.tpl"
+	insertSelectiveMethodTemplateFile     = "interface-insert-selective.tpl"
 	insertTemplateMethodFile              = "interface-insert.tpl"
 	insertTemplateIfFieldFile             = "if-field-insert.tpl"
 	insertTemplateIfValueFile             = "if-value-insert.tpl"
@@ -37,6 +37,8 @@ const (
 	tagTemplateFile                       = "tag.tpl"
 	baseTemplateFile                      = "base.tpl"
 	typesTemplateFile                     = "types.tpl"
+	updateSelectiveTemplateFile           = "update-selective.tpl"
+	updateSelectiveMethodTemplateFile     = "interface-update-selective.tpl"
 	updateTemplateFile                    = "update.tpl"
 	updateMethodTemplateFile              = "interface-update.tpl"
 	updateMapperTemplateFile              = "mapper-update.tpl"
@@ -66,7 +68,7 @@ var templates = map[string]string{
 	insertTemplateIfValueFile:             template.InsertIfValue,
 	insertTemplateMapperFile:              template.InsertMapper,
 	insertSelectiveTemplateFile:           template.InsertSelective,
-	insertSelectiveTemplateMethodFile:     template.InsertSelectiveMethod,
+	insertSelectiveMethodTemplateFile:     template.InsertSelectiveMethod,
 	modelTemplateFile:                     template.Model,
 	modelNewTemplateFile:                  template.New,
 	modelMethodTemplateFile:               template.Method,
@@ -74,6 +76,8 @@ var templates = map[string]string{
 	tagTemplateFile:                       template.Tag,
 	baseTemplateFile:                      template.Base,
 	typesTemplateFile:                     template.Types,
+	updateSelectiveTemplateFile:           template.UpdateSelective,
+	updateSelectiveMethodTemplateFile:     template.UpdateSelectiveMethod,
 	updateTemplateFile:                    template.Update,
 	updateMapperTemplateFile:              template.UpdateMapper,
 	updateMapperIfFieldValueTemplateFile:  template.UpdateIfFieldValue,

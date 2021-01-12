@@ -274,13 +274,21 @@ func (g *defaultGenerator) genModel(in parser.Table, withCache bool) (string, st
 		return "", "", err
 	}
 
+	updateSelectiveCode, updateSelectiveCodeMethod, err := genUpdateSelective(table, withCache)
+	if err != nil {
+		return "", "", err
+	}
+
+	updateCodes := make([]string, 0)
+	updateCodes = append(updateCodes, updateCode, updateSelectiveCode)
+
 	deleteCode, deleteCodeMethod, deleteCodeMapper, err := genDelete(table, withCache)
 	if err != nil {
 		return "", "", err
 	}
 
 	var list []string
-	list = append(list, insertCodeMethod, insertSelectiveCodeMethod, findOneCodeMethod, ret.findOneInterfaceMethod, updateCodeMethod, deleteCodeMethod)
+	list = append(list, insertCodeMethod, insertSelectiveCodeMethod, findOneCodeMethod, ret.findOneInterfaceMethod, updateCodeMethod, updateSelectiveCodeMethod, deleteCodeMethod)
 	typesCode, err := genTypes(table, strings.Join(modelutil.TrimStringSlice(list), util.NL), withCache)
 	if err != nil {
 		return "", "", err
@@ -296,7 +304,7 @@ func (g *defaultGenerator) genModel(in parser.Table, withCache bool) (string, st
 		return "", "", err
 	}
 
-	baseCode, err := genBase(table, withCache)
+	baseCode, err := genBaseColumn(table, withCache)
 	if err != nil {
 		return "", "", err
 	}
@@ -319,7 +327,7 @@ func (g *defaultGenerator) genModel(in parser.Table, withCache bool) (string, st
 		"method":      methodCode,
 		"insert":      strings.Join(insertCodes, "\n"),
 		"find":        strings.Join(findCode, "\n"),
-		"update":      updateCode,
+		"update":      strings.Join(updateCodes, "\n"),
 		"delete":      deleteCode,
 		"extraMethod": ret.cacheExtra,
 	})
