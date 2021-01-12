@@ -12,13 +12,13 @@ func (m *default{{.upperStartCamelObject}}Model) FindOne(conn gobatis.GoBatis, {
 `
 
 var FindOneMapper = `
-<select id="findOne" resultType="struct">
+  <select id="findOne" resultType="struct">
     select 
       <include refid="Base_Column_List" />
     from {{.table}}
-	where {{.field}} = {{print "#{" .value print "}"}}
-	limit 1
-</select>
+    where {{.field}} = {{print "#{" .value print "}"}}
+    limit 1
+  </select>
 `
 
 // 通过指定字段查询
@@ -33,13 +33,13 @@ func (m *default{{.upperStartCamelObject}}Model) FindOneBy{{.upperField}}(conn g
 `
 
 var FindOneByFieldMapper = `
-<select id="findOne{{.upperField}}" resultType="struct">
+  <select id="findOneBy{{.value}}" resultType="struct">
     select 
       <include refid="Base_Column_List" />
-    from user
-	where id = #{id,jdbcType=INTEGER}
-	limit 1
-</select>
+    from {{.table}}
+    where {{.field}} = {{print "#{" .value print "}"}}
+    limit 1
+  </select>
 `
 
 var FindOneByFieldExtraMethod = `
@@ -54,4 +54,4 @@ func (m *default{{.upperStartCamelObject}}Model) queryPrimary(conn sqlx.SqlConn,
 `
 
 var FindOneMethod = `FindOne(conn gobatis.GoBatis, {{.lowerStartCamelPrimaryKey}} {{.dataType}}) (*{{.upperStartCamelObject}}, error) `
-var FindOneByFieldMethod = ` FindOneBy{{.upperField}}(conn gobatis.GoBatis, {{.in}}) (*{{.upperStartCamelObject}}, error) `
+var FindOneByFieldMethod = `FindOneBy{{.upperField}}(conn gobatis.GoBatis, {{.in}}) (*{{.upperStartCamelObject}}, error) `

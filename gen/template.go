@@ -24,12 +24,15 @@ const (
 	importsTemplateFile                   = "import.tpl"
 	importsWithNoCacheTemplateFile        = "import-no-cache.tpl"
 	insertTemplateFile                    = "insert.tpl"
+	insertSelectiveTemplateFile           = "insert-selective.tpl"
+	insertSelectiveTemplateMethodFile     = "interface-insert-selective.tpl"
 	insertTemplateMethodFile              = "interface-insert.tpl"
 	insertTemplateIfFieldFile             = "if-field-insert.tpl"
 	insertTemplateIfValueFile             = "if-value-insert.tpl"
 	insertTemplateMapperFile              = "mapper-insert.tpl"
 	modelTemplateFile                     = "model.tpl"
 	modelNewTemplateFile                  = "model-new.tpl"
+	mapperTemplateFile                    = "mapper.tpl"
 	modelMethodTemplateFile               = "model-method.tpl"
 	tagTemplateFile                       = "tag.tpl"
 	baseTemplateFile                      = "base.tpl"
@@ -37,7 +40,7 @@ const (
 	updateTemplateFile                    = "update.tpl"
 	updateMethodTemplateFile              = "interface-update.tpl"
 	updateMapperTemplateFile              = "mapper-update.tpl"
-	UpdateMapperIfFieldValueTemplateFile  = "mapper-field-value-if-update.tpl"
+	updateMapperIfFieldValueTemplateFile  = "mapper-field-value-if-update.tpl"
 	updateMapperFieldValueTemplateFile    = "mapper-field-value-update.tpl"
 	varTemplateFile                       = "var.tpl"
 	errTemplateFile                       = "err.tpl"
@@ -62,15 +65,18 @@ var templates = map[string]string{
 	insertTemplateIfFieldFile:             template.InsertIfField,
 	insertTemplateIfValueFile:             template.InsertIfValue,
 	insertTemplateMapperFile:              template.InsertMapper,
+	insertSelectiveTemplateFile:           template.InsertSelective,
+	insertSelectiveTemplateMethodFile:     template.InsertSelectiveMethod,
 	modelTemplateFile:                     template.Model,
 	modelNewTemplateFile:                  template.New,
 	modelMethodTemplateFile:               template.Method,
+	mapperTemplateFile:                    template.Mapper,
 	tagTemplateFile:                       template.Tag,
 	baseTemplateFile:                      template.Base,
 	typesTemplateFile:                     template.Types,
 	updateTemplateFile:                    template.Update,
 	updateMapperTemplateFile:              template.UpdateMapper,
-	UpdateMapperIfFieldValueTemplateFile:  template.UpdateIfFieldValue,
+	updateMapperIfFieldValueTemplateFile:  template.UpdateIfFieldValue,
 	updateMapperFieldValueTemplateFile:    template.UpdateFieldValue,
 	varTemplateFile:                       template.Vars,
 	errTemplateFile:                       template.Error,

@@ -1,7 +1,6 @@
 package gen
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/tal-tech/go-zero/tools/goctl/util"
@@ -87,7 +86,7 @@ func genUpdate(table Table, withCache bool) (string, string, string, error) {
 	}
 
 	// mapper if value
-	text, err = util.LoadTemplate(category, insertTemplateIfValueFile, template.InsertIfValue)
+	text, err = util.LoadTemplate(category, updateMapperIfFieldValueTemplateFile, template.UpdateIfFieldValue)
 	if err != nil {
 		return "", "", "", err
 	}
@@ -101,7 +100,7 @@ func genUpdate(table Table, withCache bool) (string, string, string, error) {
 		if field.IsPrimaryKey {
 			continue
 		}
-		insertIfValueOutput, err := util.With("insertIfValue").
+		updateIfFieldValueOutput, err := util.With("updateIfFieldValue").
 			Parse(text).
 			Execute(map[string]interface{}{
 				"field": field.Name.Source(),
@@ -111,7 +110,7 @@ func genUpdate(table Table, withCache bool) (string, string, string, error) {
 			return "", "", "", err
 		}
 
-		ifValues = append(ifValues, insertIfValueOutput.String())
+		ifValues = append(ifValues, updateIfFieldValueOutput.String())
 	}
 
 	// mapper
@@ -132,8 +131,6 @@ func genUpdate(table Table, withCache bool) (string, string, string, error) {
 	if err != nil {
 		return "", "", "", err
 	}
-
-	fmt.Println(updateMapperOutput.String())
 
 	return output.String(), updateMethodOutput.String(), updateMapperOutput.String(), nil
 }

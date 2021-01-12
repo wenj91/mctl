@@ -10,10 +10,9 @@ func (m *default{{.upperStartCamelObject}}Model) Delete(conn gobatis.GoBatis, {{
 `
 
 var DeleteMapper = `
-<delete id="delete">
-  delete from {{.table}}
-  where {{.field}} = {{print "#{" .value print "}"}}
-</update>
-`
+  <delete id="delete">
+    delete from {{.table}}
+    where {{.field}} = {{print "#{" .value print "}"}}
+  </delete>`
 
-var DeleteMethod = `Delete({{.lowerStartCamelPrimaryKey}} {{.dataType}}) error`
+var DeleteMethod = `Delete(conn gobatis.GoBatis, {{.lowerStartCamelPrimaryKey}} {{.dataType}}) (affected int64, err error) `

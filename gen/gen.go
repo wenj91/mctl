@@ -73,33 +73,35 @@ func newDefaultOption() Option {
 }
 
 func (g *defaultGenerator) StartFromDDL(source string, withCache bool) error {
-	modelList, err := g.genFromDDL(source, withCache)
+	modelList, mapperList, err := g.genFromDDL(source, withCache)
 	if err != nil {
 		return err
 	}
 
-	return g.createFile(modelList)
+	return g.createFile(modelList, mapperList)
 }
 
 func (g *defaultGenerator) StartFromInformationSchema(db string, columns map[string][]*model.Column, withCache bool) error {
 	m := make(map[string]string)
+	mm := make(map[string]string)
 	for tableName, column := range columns {
 		table, err := parser.ConvertColumn(db, tableName, column)
 		if err != nil {
 			return err
 		}
 
-		code, err := g.genModel(*table, withCache)
+		code, mapper, err := g.genModel(*table, withCache)
 		if err != nil {
 			return err
 		}
 
 		m[table.Name.Source()] = code
+		mm[table.Name.Source()] = mapper
 	}
-	return g.createFile(m)
+	return g.createFile(m, mm)
 }
 
-func (g *defaultGenerator) createFile(modelList map[string]string) error {
+func (g *defaultGenerator) createFile(modelList map[string]string, mapperList map[string]string) error {
 	dirAbs, err := filepath.Abs(g.dir)
 	if err != nil {
 		return err
@@ -130,6 +132,26 @@ func (g *defaultGenerator) createFile(modelList map[string]string) error {
 			return err
 		}
 	}
+
+	for tableName, code := range mapperList {
+		tn := stringx.From(tableName)
+		modelFilename, err := format.FileNamingFormat(g.cfg.NamingFormat, fmt.Sprintf("%s_mapper", tn.Source()))
+		if err != nil {
+			return err
+		}
+
+		name := modelFilename + ".xml"
+		filename := filepath.Join(dirAbs, name)
+		if util.FileExists(filename) {
+			g.Warning("%s already exists, ignored.", name)
+			continue
+		}
+		err = ioutil.WriteFile(filename, []byte(code), os.ModePerm)
+		if err != nil {
+			return err
+		}
+	}
+
 	// generate error file
 	varFilename, err := format.FileNamingFormat(g.cfg.NamingFormat, "vars")
 	if err != nil {
@@ -154,21 +176,23 @@ func (g *defaultGenerator) createFile(modelList map[string]string) error {
 }
 
 // ret1: key-table name,value-code
-func (g *defaultGenerator) genFromDDL(source string, withCache bool) (map[string]string, error) {
+func (g *defaultGenerator) genFromDDL(source string, withCache bool) (map[string]string, map[string]string, error) {
 	ddlList := g.split(source)
 	m := make(map[string]string)
+	mm := make(map[string]string)
 	for _, ddl := range ddlList {
 		table, err := parser.Parse(ddl)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
-		code, err := g.genModel(*table, withCache)
+		code, mapper, err := g.genModel(*table, withCache)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 		m[table.Name.Source()] = code
+		mm[table.Name.Source()] = mapper
 	}
-	return m, nil
+	return m, mm, nil
 }
 
 type (
@@ -179,14 +203,14 @@ type (
 	}
 )
 
-func (g *defaultGenerator) genModel(in parser.Table, withCache bool) (string, error) {
+func (g *defaultGenerator) genModel(in parser.Table, withCache bool) (string, string, error) {
 	if len(in.PrimaryKey.Name.Source()) == 0 {
-		return "", fmt.Errorf("table %s: missing primary key", in.Name.Source())
+		return "", "", fmt.Errorf("table %s: missing primary key", in.Name.Source())
 	}
 
 	text, err := util.LoadTemplate(category, modelTemplateFile, template.Model)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	t := util.With("model").
@@ -195,12 +219,12 @@ func (g *defaultGenerator) genModel(in parser.Table, withCache bool) (string, er
 
 	m, err := genCacheKeys(in)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	importsCode, err := genImports(withCache, in.ContainsTime())
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	var table Table
@@ -217,81 +241,93 @@ func (g *defaultGenerator) genModel(in parser.Table, withCache bool) (string, er
 
 	varsCode, err := genVars(table, withCache)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	insertCode, insertCodeMethod, insertCodeMapper, err := genInsert(table, withCache)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
+
+	insertSelectiveCode, insertSelectiveCodeMethod, err := genInsertSelective(table, withCache)
+	if err != nil {
+		return "", "", err
+	}
+
+	insertCodes := make([]string, 0)
+	insertCodes = append(insertCodes, insertCode, insertSelectiveCode)
 
 	var findCode = make([]string, 0)
 	findOneCode, findOneCodeMethod, findOneCodeMapper, err := genFindOne(table, withCache)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	ret, err := genFindOneByField(table, withCache)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	findCode = append(findCode, findOneCode, ret.findOneMethod)
 	updateCode, updateCodeMethod, updateCodeMapper, err := genUpdate(table, withCache)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	deleteCode, deleteCodeMethod, deleteCodeMapper, err := genDelete(table, withCache)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	var list []string
-	list = append(list, insertCodeMethod, findOneCodeMethod, ret.findOneInterfaceMethod, updateCodeMethod, deleteCodeMethod)
+	list = append(list, insertCodeMethod, insertSelectiveCodeMethod, findOneCodeMethod, ret.findOneInterfaceMethod, updateCodeMethod, deleteCodeMethod)
 	typesCode, err := genTypes(table, strings.Join(modelutil.TrimStringSlice(list), util.NL), withCache)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	newCode, err := genNew(table, withCache)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	methodCode, err := genMethod(table, withCache)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	baseCode, err := genBase(table, withCache)
 	if err != nil {
-		return "", err
+		return "", "", err
+	}
+
+	var mapperList []string
+	mapperList = append(mapperList, baseCode, insertCodeMapper, updateCodeMapper, deleteCodeMapper, findOneCodeMapper, ret.findOneMapper)
+
+	mapper := strings.Join(modelutil.TrimStringSlice(mapperList), util.NL)
+	mapperCode, err := genMapper(table, mapper)
+	if err != nil {
+		return "", "", err
 	}
 
 	output, err := t.Execute(map[string]interface{}{
-		"pkg":           g.pkg,
-		"imports":       importsCode,
-		"vars":          varsCode,
-		"types":         typesCode,
-		"new":           newCode,
-		"method":        methodCode,
-		"insert":        insertCode,
-		"find":          strings.Join(findCode, "\n"),
-		"update":        updateCode,
-		"delete":        deleteCode,
-		"extraMethod":   ret.cacheExtra,
-		"base":          baseCode,
-		"insertMapper":  insertCodeMapper,
-		"updateMapper":  updateCodeMapper,
-		"findOneMapper": findOneCodeMapper,
-		"deleteMapper":  deleteCodeMapper,
+		"pkg":         g.pkg,
+		"imports":     importsCode,
+		"vars":        varsCode,
+		"types":       typesCode,
+		"new":         newCode,
+		"method":      methodCode,
+		"insert":      strings.Join(insertCodes, "\n"),
+		"find":        strings.Join(findCode, "\n"),
+		"update":      updateCode,
+		"delete":      deleteCode,
+		"extraMethod": ret.cacheExtra,
 	})
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
-	return output.String(), nil
+	return output.String(), mapperCode, nil
 }
 
 func wrapWithRawString(v string) string {

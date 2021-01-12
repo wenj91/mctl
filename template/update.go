@@ -15,17 +15,18 @@ var UpdateIfFieldValue = `      <if test="{{.value}} != nil and {{.value}} != ''
 `
 
 var UpdateMapper = `
-<update id="update">
-  update {{.table}}
-  set {{.fields}}
-  where {{.field}} = {{print "#{" .value print "}"}}
-</update>
-<update id="updateSelective">
-  update {{.table}}
-  <set>
-{{.fieldValues}}  </set>
-  where {{.field}} = {{print "#{" .value print "}"}}
-</update>
+  <update id="update">
+    update {{.table}}
+    set {{.fields}}
+    where {{.field}} = {{print "#{" .value print "}"}}
+  </update>
+
+  <update id="updateSelective">
+    update {{.table}}
+    <set>
+  {{.fieldValues}}    </set>
+    where {{.field}} = {{print "#{" .value print "}"}}
+  </update>
 `
 
 var UpdateMethod = `Update(conn gobatis.GoBatis, data *{{.upperStartCamelObject}}) (affected int64, err error) `

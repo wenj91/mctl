@@ -1,7 +1,6 @@
 package gen
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/tal-tech/go-zero/core/collection"
@@ -36,6 +35,7 @@ func genInsert(table Table, withCache bool) (string, string, string, error) {
 		expressions = append(expressions, "?")
 		expressionValues = append(expressionValues, "data."+camel)
 	}
+
 	camel := table.Name.ToCamel()
 	text, err := util.LoadTemplate(category, insertTemplateFile, template.Insert)
 	if err != nil {
@@ -137,8 +137,6 @@ func genInsert(table Table, withCache bool) (string, string, string, error) {
 	if err != nil {
 		return "", "", "", err
 	}
-
-	fmt.Println(insertMapperOutput)
 
 	// interface method
 	text, err = util.LoadTemplate(category, insertTemplateMethodFile, template.InsertMethod)

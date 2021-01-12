@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/wenj91/model/template"
 	"github.com/tal-tech/go-zero/tools/goctl/util"
 	"github.com/tal-tech/go-zero/tools/goctl/util/stringx"
+	"github.com/wenj91/model/template"
 )
 
 type findOneCode struct {
 	findOneMethod          string
+	findOneMapper          string
 	findOneInterfaceMethod string
 	cacheExtra             string
 }
@@ -23,6 +24,7 @@ func genFindOneByField(table Table, withCache bool) (*findOneCode, error) {
 
 	t := util.With("findOneByField").Parse(text)
 	var list []string
+	var mapperList []string
 	camelTableName := table.Name.ToCamel()
 	for _, field := range table.Fields {
 		if field.IsPrimaryKey || !field.IsUniqueKey {
@@ -45,7 +47,25 @@ func genFindOneByField(table Table, withCache bool) (*findOneCode, error) {
 			return nil, err
 		}
 
+		// mapper
+		text, err = util.LoadTemplate(category, findOneByFieldMapperTemplateFile, template.FindOneByFieldMapper)
+		if err != nil {
+			return nil, err
+		}
+
+		findOneByFieldMapperOutput, err := util.With("findOneByFieldMapper").
+			Parse(text).
+			Execute(map[string]interface{}{
+				"table": table.Name.Source(),
+				"field": field.Name.Source(),
+				"value": field.Name.ToCamel(),
+			})
+		if err != nil {
+			return nil, err
+		}
+
 		list = append(list, output.String())
+		mapperList = append(mapperList, findOneByFieldMapperOutput.String())
 	}
 
 	text, err = util.LoadTemplate(category, findOneByFieldMethodTemplateFile, template.FindOneByFieldMethod)
@@ -97,6 +117,7 @@ func genFindOneByField(table Table, withCache bool) (*findOneCode, error) {
 
 	return &findOneCode{
 		findOneMethod:          strings.Join(list, util.NL),
+		findOneMapper:          strings.Join(mapperList, util.NL),
 		findOneInterfaceMethod: strings.Join(listMethod, util.NL),
 	}, nil
 }

@@ -1,7 +1,6 @@
 package gen
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/tal-tech/go-zero/core/collection"
@@ -76,8 +75,6 @@ func genDelete(table Table, withCache bool) (string, string, string, error) {
 	if err != nil {
 		return "", "", "", err
 	}
-
-	fmt.Println(deleteMapperOutput.String())
 
 	return output.String(), deleteMethodOut.String(), deleteMapperOutput.String(), nil
 }

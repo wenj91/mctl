@@ -48,6 +48,7 @@ func TestCacheModel(t *testing.T) {
 	assert.Nil(t, err)
 	assert.True(t, func() bool {
 		_, err := os.Stat(filepath.Join(noCacheDir, "testuserinfomodel.go"))
+		_, err = os.Stat(filepath.Join(noCacheDir, "testuserinfomapper.xml"))
 		return err == nil
 	}())
 }

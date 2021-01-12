@@ -1,8 +1,6 @@
 package gen
 
 import (
-	"fmt"
-
 	"github.com/tal-tech/go-zero/tools/goctl/util"
 	"github.com/tal-tech/go-zero/tools/goctl/util/stringx"
 	"github.com/wenj91/model/template"
@@ -63,8 +61,6 @@ func genFindOne(table Table, withCache bool) (string, string, string, error) {
 	if err != nil {
 		return "", "", "", err
 	}
-
-	fmt.Println(findOneMapperOutput.String())
 
 	return output.String(), findOneMethod.String(), findOneMapperOutput.String(), nil
 }

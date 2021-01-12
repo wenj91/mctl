@@ -7,6 +7,13 @@ func (m *default{{.upperStartCamelObject}}Model) Insert(conn gobatis.GoBatis, da
 }
 `
 
+var InsertSelective = `
+func (m *default{{.upperStartCamelObject}}Model) InsertSelective(conn gobatis.GoBatis, data *{{.upperStartCamelObject}}) (id int64, affected int64, err error) {
+	id, affected, err = conn.Insert(m.method("saveSelective"), data)
+	return
+}
+`
+
 var InsertIfField = `      <if test="{{.value}} != nil and {{.value}} != ''">
         {{.field}},  
       </if>
@@ -18,11 +25,12 @@ var InsertIfValue = `      <if test="{{.value}} != nil and {{.value}} != ''">
 `
 
 var InsertMapper = `
-  <insert id="insert">
+  <insert id="save">
     insert into {{.table}} ({{.fields}})
     values ({{.sFields}})
   </insert>
-  <insert id="insertSelective">
+
+  <insert id="saveSelective">
     insert into {{.table}}
     <trim prefix="(" suffix=")" suffixOverrides=",">
 {{.ifFields}}    </trim>
@@ -32,3 +40,4 @@ var InsertMapper = `
 `
 
 var InsertMethod = `Insert(conn gobatis.GoBatis, data *{{.upperStartCamelObject}}) (id int64, affected int64, err error) `
+var InsertSelectiveMethod = `InsertSelective(conn gobatis.GoBatis, data *{{.upperStartCamelObject}}) (id int64, affected int64, err error) `
