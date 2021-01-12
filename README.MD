@@ -376,5 +376,4 @@ OPTIONS:
 | longtext       | string          | sql.NullString                         |
 | enum           | string          | sql.NullString                         |
 | set            | string          | sql.NullString                         |
-| json           | string          | sql.NullString                         |#   m o d e l  
- 
+| json           | string          | sql.NullString                         |
