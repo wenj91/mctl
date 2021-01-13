@@ -244,6 +244,11 @@ func (g *defaultGenerator) genModel(in parser.Table, withCache bool) (string, st
 		return "", "", err
 	}
 
+	toStringCode, err := genToString(table)
+	if err != nil {
+		return "", "", err
+	}
+
 	insertCode, insertCodeMethod, insertCodeMapper, err := genInsert(table, withCache)
 	if err != nil {
 		return "", "", err
@@ -324,6 +329,7 @@ func (g *defaultGenerator) genModel(in parser.Table, withCache bool) (string, st
 		"vars":        varsCode,
 		"types":       typesCode,
 		"new":         newCode,
+		"toString":    toStringCode,
 		"method":      methodCode,
 		"insert":      strings.Join(insertCodes, "\n"),
 		"find":        strings.Join(findCode, "\n"),

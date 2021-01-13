@@ -31,7 +31,7 @@ var UpdateMapper = `
   <update id="updateSelective">
     update {{.table}}
     <set>
-  {{.fieldValues}}    </set>
+{{.fieldValues}}    </set>
     where {{.field}} = {{print "#{" .value print "}"}}
   </update>
 `

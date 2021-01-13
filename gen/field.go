@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/tal-tech/go-zero/tools/goctl/util"
+	"github.com/tal-tech/go-zero/tools/goctl/util/stringx"
 	"github.com/wenj91/model/parser"
 	"github.com/wenj91/model/template"
 )
@@ -22,7 +23,7 @@ func genFields(fields []parser.Field) (string, error) {
 }
 
 func genField(field parser.Field) (string, error) {
-	tag, err := genTag(field.Name.Source())
+	tag, err := genTag(field.Name.Source(), stringx.From(field.Name.ToCamel()).Untitle())
 	if err != nil {
 		return "", err
 	}

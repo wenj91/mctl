@@ -39,10 +39,6 @@ var (
 									Usage: "the file naming format, see [https://github.com/tal-tech/go-zero/tree/master/tools/goctl/config/readme.md]",
 								},
 								cli.BoolFlag{
-									Name:  "cache, c",
-									Usage: "generate code with cache [optional]",
-								},
-								cli.BoolFlag{
 									Name:  "idea",
 									Usage: "for idea plugin [optional]",
 								},
@@ -60,10 +56,6 @@ var (
 								cli.StringFlag{
 									Name:  "table, t",
 									Usage: `the table or table globbing patterns in the database`,
-								},
-								cli.BoolFlag{
-									Name:  "cache, c",
-									Usage: "generate code with cache [optional]",
 								},
 								cli.StringFlag{
 									Name:  "dir, d",

@@ -32,7 +32,7 @@ const (
 func MysqlDDL(ctx *cli.Context) error {
 	src := ctx.String(flagSrc)
 	dir := ctx.String(flagDir)
-	cache := ctx.Bool(flagCache)
+	cache := false
 	idea := ctx.Bool(flagIdea)
 	style := ctx.String(flagStyle)
 	cfg, err := config.NewConfig(style)
@@ -45,7 +45,7 @@ func MysqlDDL(ctx *cli.Context) error {
 func MyDataSource(ctx *cli.Context) error {
 	url := strings.TrimSpace(ctx.String(flagUrl))
 	dir := strings.TrimSpace(ctx.String(flagDir))
-	cache := ctx.Bool(flagCache)
+	cache := false
 	idea := ctx.Bool(flagIdea)
 	style := ctx.String(flagStyle)
 	pattern := strings.TrimSpace(ctx.String(flagTable))

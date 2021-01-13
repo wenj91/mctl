@@ -46,6 +46,7 @@ const (
 	updateMapperFieldValueTemplateFile    = "mapper-field-value-update.tpl"
 	varTemplateFile                       = "var.tpl"
 	errTemplateFile                       = "err.tpl"
+	toStringTemplateFile                  = "to-string.tpl"
 )
 
 var templates = map[string]string{
@@ -84,6 +85,7 @@ var templates = map[string]string{
 	updateMapperFieldValueTemplateFile:    template.UpdateFieldValue,
 	varTemplateFile:                       template.Vars,
 	errTemplateFile:                       template.Error,
+	toStringTemplateFile:                  template.ToStr,
 }
 
 func Category() string {

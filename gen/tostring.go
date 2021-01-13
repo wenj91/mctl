@@ -5,20 +5,17 @@ import (
 	"github.com/wenj91/model/template"
 )
 
-func genTag(in string, jsonIn string) (string, error) {
-	if in == "" {
-		return in, nil
-	}
-	text, err := util.LoadTemplate(category, tagTemplateFile, template.Tag)
+func genToString(table Table) (string, error) {
+	camel := table.Name.ToCamel()
+	text, err := util.LoadTemplate(category, toStringTemplateFile, template.ToStr)
 	if err != nil {
 		return "", err
 	}
 
-	output, err := util.With("tag").
+	output, err := util.With("tostring").
 		Parse(text).
 		Execute(map[string]interface{}{
-			"field": in,
-			"json":  jsonIn,
+			"upperStartCamelObject": camel,
 		})
 	if err != nil {
 		return "", err
