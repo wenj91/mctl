@@ -30,7 +30,7 @@ func (m *default{{.upperStartCamelObject}}Model) FindSelective(conn gobatis.GoBa
 `
 
 var FindSelectiveIfFieldValue = `      <if test="{{.value}} != nil and {{.value}} != ''">
-        {{.field}} = #{{print "{" .value print "}"}},
+        and {{.field}} = #{{print "{" .value print "}"}}
       </if>
 `
 
