@@ -132,5 +132,5 @@ func genUpdate(table Table, withCache bool) (string, string, string, error) {
 		return "", "", "", err
 	}
 
-	return output.String(), updateMethodOutput.String(), updateMapperOutput.String(), nil
+	return output.String(), updateMethodOutput.String(), strings.Trim(updateMapperOutput.String(), "\n"), nil
 }

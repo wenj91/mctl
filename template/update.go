@@ -27,7 +27,6 @@ var UpdateMapper = `
     set {{.fields}}
     where {{.field}} = {{print "#{" .value print "}"}}
   </update>
-
   <update id="updateSelective">
     update {{.table}}
     <set>

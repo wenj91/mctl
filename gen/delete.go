@@ -76,5 +76,8 @@ func genDelete(table Table, withCache bool) (string, string, string, error) {
 		return "", "", "", err
 	}
 
-	return output.String(), deleteMethodOut.String(), deleteMapperOutput.String(), nil
+	return output.String(),
+		deleteMethodOut.String(),
+		strings.Trim(deleteMapperOutput.String(), "\n"),
+		nil
 }

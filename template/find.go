@@ -21,6 +21,29 @@ var FindOneMapper = `
   </select>
 `
 
+var FindSelective = `
+func (m *default{{.upperStartCamelObject}}Model) FindSelective(conn gobatis.GoBatis, data *{{.upperStartCamelObject}}) ([]*{{.upperStartCamelObject}}, error) {
+  resp := make([]*{{.upperStartCamelObject}}, 0)
+	err := conn.Select(m.method("findSelective"), data)(&resp)
+	return resp, err
+}
+`
+
+var FindSelectiveIfFieldValue = `      <if test="{{.value}} != nil and {{.value}} != ''">
+        {{.field}} = #{{print "{" .value print "}"}},
+      </if>
+`
+
+var FindSelectiveMapper = `
+  <select id="findSelective" resultType="structs">
+    select 
+      <include refid="Base_Column_List" />
+    from {{.table}}
+    <where>
+{{.fieldValues}}    </where>
+  </select>
+`
+
 // 通过指定字段查询
 var FindOneByField = `
 func (m *default{{.upperStartCamelObject}}Model) FindOneBy{{.upperField}}(conn gobatis.GoBatis, {{.in}}) (*{{.upperStartCamelObject}}, error) {
@@ -55,3 +78,4 @@ func (m *default{{.upperStartCamelObject}}Model) queryPrimary(conn sqlx.SqlConn,
 
 var FindOneMethod = `FindOne(conn gobatis.GoBatis, {{.lowerStartCamelPrimaryKey}} {{.dataType}}) (*{{.upperStartCamelObject}}, error) `
 var FindOneByFieldMethod = `FindOneBy{{.upperField}}(conn gobatis.GoBatis, {{.in}}) (*{{.upperStartCamelObject}}, error) `
+var FindSelectiveMethod = `FindSelective(conn gobatis.GoBatis, data *{{.upperStartCamelObject}}) ([]*{{.upperStartCamelObject}}, error) `

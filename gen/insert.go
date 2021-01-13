@@ -153,5 +153,8 @@ func genInsert(table Table, withCache bool) (string, string, string, error) {
 		return "", "", "", err
 	}
 
-	return output.String(), insertMethodOutput.String(), insertMapperOutput.String(), nil
+	return output.String(),
+		insertMethodOutput.String(),
+		strings.Trim(insertMapperOutput.String(), "\n"),
+		nil
 }

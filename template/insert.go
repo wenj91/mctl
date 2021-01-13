@@ -29,7 +29,6 @@ var InsertMapper = `
     insert into {{.table}} ({{.fields}})
     values ({{.sFields}})
   </insert>
-
   <insert id="saveSelective">
     insert into {{.table}}
     <trim prefix="(" suffix=")" suffixOverrides=",">

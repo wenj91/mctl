@@ -27,5 +27,5 @@ func genBaseColumn(table Table, withCache bool) (string, error) {
 		return "", err
 	}
 
-	return output.String(), nil
+	return strings.Trim(output.String(), "\n"), nil
 }

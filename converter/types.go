@@ -57,17 +57,17 @@ func mayConvertNullType(goDataType string, isDefaultNull bool) string {
 
 	switch goDataType {
 	case "int64":
-		return "sql.NullInt64"
+		return "gobatis.NullInt64"
 	case "int32":
-		return "sql.NullInt32"
+		return "gobatis.NullInt32"
 	case "float64":
-		return "sql.NullFloat64"
+		return "gobatis.NullFloat64"
 	case "bool":
-		return "sql.NullBool"
+		return "gobatis.NullBool"
 	case "string":
-		return "sql.NullString"
+		return "gobatis.NullString"
 	case "time.Time":
-		return "sql.NullTime"
+		return "gobatis.NullTime"
 	default:
 		return goDataType
 	}

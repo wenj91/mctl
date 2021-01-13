@@ -64,8 +64,8 @@ func genFindOneByField(table Table, withCache bool) (*findOneCode, error) {
 			return nil, err
 		}
 
-		list = append(list, output.String())
-		mapperList = append(mapperList, findOneByFieldMapperOutput.String())
+		list = append(list, strings.Trim(output.String(), "\n"))
+		mapperList = append(mapperList, strings.Trim(findOneByFieldMapperOutput.String(), "\n"))
 	}
 
 	text, err = util.LoadTemplate(category, findOneByFieldMethodTemplateFile, template.FindOneByFieldMethod)
@@ -89,7 +89,7 @@ func genFindOneByField(table Table, withCache bool) (*findOneCode, error) {
 			return nil, err
 		}
 
-		listMethod = append(listMethod, output.String())
+		listMethod = append(listMethod, strings.Trim(output.String(), "\n"))
 	}
 
 	return &findOneCode{

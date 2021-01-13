@@ -73,5 +73,7 @@ func genInsertSelective(table Table, withCache bool) (string, string, error) {
 		return "", "", err
 	}
 
-	return output.String(), insertMethodOutput.String(), nil
+	return output.String(),
+		strings.Trim(insertMethodOutput.String(), "\n"),
+		nil
 }

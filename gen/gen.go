@@ -114,6 +114,11 @@ func (g *defaultGenerator) createFile(modelList map[string]string, mapperList ma
 		return err
 	}
 
+	err = util.MkdirIfNotExist(dirAbs + "/mappers")
+	if err != nil {
+		return err
+	}
+
 	for tableName, code := range modelList {
 		tn := stringx.From(tableName)
 		modelFilename, err := format.FileNamingFormat(g.cfg.NamingFormat, fmt.Sprintf("%s_model", tn.Source()))
@@ -141,7 +146,7 @@ func (g *defaultGenerator) createFile(modelList map[string]string, mapperList ma
 		}
 
 		name := modelFilename + ".xml"
-		filename := filepath.Join(dirAbs, name)
+		filename := filepath.Join(dirAbs, "mappers", name)
 		if util.FileExists(filename) {
 			g.Warning("%s already exists, ignored.", name)
 			continue
@@ -268,12 +273,17 @@ func (g *defaultGenerator) genModel(in parser.Table, withCache bool) (string, st
 		return "", "", err
 	}
 
+	findSelectiveCode, findSelectiveCodeMethod, findSelectiveCodeMapper, err := genFindSelective(table, withCache)
+	if err != nil {
+		return "", "", err
+	}
+
 	ret, err := genFindOneByField(table, withCache)
 	if err != nil {
 		return "", "", err
 	}
 
-	findCode = append(findCode, findOneCode, ret.findOneMethod)
+	findCode = append(findCode, findOneCode, ret.findOneMethod, findSelectiveCode)
 	updateCode, updateCodeMethod, updateCodeMapper, err := genUpdate(table, withCache)
 	if err != nil {
 		return "", "", err
@@ -293,7 +303,7 @@ func (g *defaultGenerator) genModel(in parser.Table, withCache bool) (string, st
 	}
 
 	var list []string
-	list = append(list, insertCodeMethod, insertSelectiveCodeMethod, findOneCodeMethod, ret.findOneInterfaceMethod, updateCodeMethod, updateSelectiveCodeMethod, deleteCodeMethod)
+	list = append(list, insertCodeMethod, insertSelectiveCodeMethod, findOneCodeMethod, ret.findOneInterfaceMethod, findSelectiveCodeMethod, updateCodeMethod, updateSelectiveCodeMethod, deleteCodeMethod)
 	typesCode, err := genTypes(table, strings.Join(modelutil.TrimStringSlice(list), util.NL), withCache)
 	if err != nil {
 		return "", "", err
@@ -315,7 +325,7 @@ func (g *defaultGenerator) genModel(in parser.Table, withCache bool) (string, st
 	}
 
 	var mapperList []string
-	mapperList = append(mapperList, baseCode, insertCodeMapper, updateCodeMapper, deleteCodeMapper, findOneCodeMapper, ret.findOneMapper)
+	mapperList = append(mapperList, baseCode, insertCodeMapper, updateCodeMapper, deleteCodeMapper, findOneCodeMapper, ret.findOneMapper, findSelectiveCodeMapper, updateCodeMapper)
 
 	mapper := strings.Join(modelutil.TrimStringSlice(mapperList), util.NL)
 	mapperCode, err := genMapper(table, mapper)
