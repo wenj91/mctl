@@ -8,7 +8,7 @@ import (
 	"github.com/tal-tech/go-zero/core/logx"
 	"github.com/tal-tech/go-zero/tools/goctl/tpl"
 	"github.com/urfave/cli"
-	model "github.com/wenj91/model/command"
+	model "github.com/wenj91/mctl/command"
 )
 
 var (

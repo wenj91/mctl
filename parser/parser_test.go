@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/wenj91/model/model"
+	"github.com/wenj91/mctl/model"
 )
 
 func TestParsePlainText(t *testing.T) {

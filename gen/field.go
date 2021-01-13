@@ -5,8 +5,8 @@ import (
 
 	"github.com/tal-tech/go-zero/tools/goctl/util"
 	"github.com/tal-tech/go-zero/tools/goctl/util/stringx"
-	"github.com/wenj91/model/parser"
-	"github.com/wenj91/model/template"
+	"github.com/wenj91/mctl/parser"
+	"github.com/wenj91/mctl/template"
 )
 
 func genFields(fields []parser.Field) (string, error) {

@@ -12,9 +12,9 @@ import (
 	"github.com/tal-tech/go-zero/tools/goctl/config"
 	"github.com/tal-tech/go-zero/tools/goctl/util/console"
 	"github.com/urfave/cli"
-	"github.com/wenj91/model/gen"
-	"github.com/wenj91/model/model"
-	"github.com/wenj91/model/util"
+	"github.com/wenj91/mctl/gen"
+	"github.com/wenj91/mctl/model"
+	"github.com/wenj91/mctl/util"
 )
 
 var errNotMatched = errors.New("sql not matched")

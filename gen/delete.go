@@ -6,7 +6,7 @@ import (
 	"github.com/tal-tech/go-zero/core/collection"
 	"github.com/tal-tech/go-zero/tools/goctl/util"
 	"github.com/tal-tech/go-zero/tools/goctl/util/stringx"
-	"github.com/wenj91/model/template"
+	"github.com/wenj91/mctl/template"
 )
 
 func genDelete(table Table, withCache bool) (string, string, string, error) {

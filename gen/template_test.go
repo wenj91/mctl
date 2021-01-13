@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/tal-tech/go-zero/tools/goctl/util"
-	"github.com/wenj91/model/template"
+	"github.com/wenj91/mctl/template"
 )
 
 func TestGenTemplates(t *testing.T) {

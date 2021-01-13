@@ -5,7 +5,7 @@ import (
 
 	"github.com/tal-tech/go-zero/tools/goctl/util"
 	"github.com/tal-tech/go-zero/tools/goctl/util/stringx"
-	"github.com/wenj91/model/template"
+	"github.com/wenj91/mctl/template"
 )
 
 func genVars(table Table, withCache bool) (string, error) {

@@ -12,10 +12,10 @@ import (
 	"github.com/tal-tech/go-zero/tools/goctl/util/console"
 	"github.com/tal-tech/go-zero/tools/goctl/util/format"
 	"github.com/tal-tech/go-zero/tools/goctl/util/stringx"
-	"github.com/wenj91/model/model"
-	"github.com/wenj91/model/parser"
-	"github.com/wenj91/model/template"
-	modelutil "github.com/wenj91/model/util"
+	"github.com/wenj91/mctl/model"
+	"github.com/wenj91/mctl/parser"
+	"github.com/wenj91/mctl/template"
+	modelutil "github.com/wenj91/mctl/util"
 )
 
 const (

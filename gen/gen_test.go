@@ -12,7 +12,7 @@ import (
 	"github.com/tal-tech/go-zero/core/logx"
 	"github.com/tal-tech/go-zero/core/stringx"
 	"github.com/tal-tech/go-zero/tools/goctl/config"
-	"github.com/wenj91/model/builderx"
+	"github.com/wenj91/mctl/builderx"
 )
 
 var (

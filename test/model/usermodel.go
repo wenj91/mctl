@@ -9,7 +9,7 @@ import (
 	"github.com/tal-tech/go-zero/core/stores/sqlc"
 	"github.com/tal-tech/go-zero/core/stores/sqlx"
 	"github.com/tal-tech/go-zero/core/stringx"
-	"github.com/wenj91/model/builderx"
+	"github.com/wenj91/mctl/builderx"
 )
 
 var (

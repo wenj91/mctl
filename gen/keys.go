@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/tal-tech/go-zero/tools/goctl/util/stringx"
-	"github.com/wenj91/model/parser"
+	"github.com/wenj91/mctl/parser"
 )
 
 type (

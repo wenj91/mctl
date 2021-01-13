@@ -2,7 +2,7 @@ package gen
 
 import (
 	"github.com/tal-tech/go-zero/tools/goctl/util"
-	"github.com/wenj91/model/template"
+	"github.com/wenj91/mctl/template"
 )
 
 func genTypes(table Table, methods string, withCache bool) (string, error) {

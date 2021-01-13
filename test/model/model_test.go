@@ -11,7 +11,7 @@ import (
 	"github.com/tal-tech/go-zero/core/stores/cache"
 	"github.com/tal-tech/go-zero/core/stores/redis"
 	"github.com/tal-tech/go-zero/core/stores/redis/redistest"
-	mocksql "github.com/wenj91/model/test"
+	mocksql "github.com/wenj91/mctl/test"
 )
 
 func TestStudentModel(t *testing.T) {

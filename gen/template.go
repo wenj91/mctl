@@ -5,7 +5,7 @@ import (
 
 	"github.com/tal-tech/go-zero/tools/goctl/util"
 	"github.com/urfave/cli"
-	"github.com/wenj91/model/template"
+	"github.com/wenj91/mctl/template"
 )
 
 const (
