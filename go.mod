@@ -1,4 +1,4 @@
-module github.com/wenj91/model
+module github.com/wenj91/mctl
 
 go 1.14
 
