@@ -325,7 +325,7 @@ func (g *defaultGenerator) genModel(in parser.Table, withCache bool) (string, st
 	}
 
 	var mapperList []string
-	mapperList = append(mapperList, baseCode, insertCodeMapper, updateCodeMapper, deleteCodeMapper, findOneCodeMapper, ret.findOneMapper, findSelectiveCodeMapper, updateCodeMapper)
+	mapperList = append(mapperList, baseCode, insertCodeMapper, updateCodeMapper, deleteCodeMapper, findOneCodeMapper, ret.findOneMapper, findSelectiveCodeMapper)
 
 	mapper := strings.Join(modelutil.TrimStringSlice(mapperList), util.NL)
 	mapperCode, err := genMapper(table, mapper)
