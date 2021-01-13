@@ -4,6 +4,12 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 
 ## 快速开始
 
+* mctl安装
+
+```bash
+GO111MODULE=on GOPROXY=https://goproxy.cn/,direct go get -u github.com/wenj91/mctl
+```
+
 * 通过ddl生成
 
     ```shell script
