@@ -4,6 +4,12 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 
 ## 快速开始
 
+* mctl安装
+
+	```bash
+	GO111MODULE=on GOPROXY=https://goproxy.cn/,direct go get -u github.com/wenj91/mctl
+	```
+
 * 通过ddl生成
 
     ```shell script
@@ -94,7 +100,7 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 	func (m *defaultTtModel) FindOne(conn gobatis.GoBatis, id int64) (*Tt, error) {
 		var resp *Tt
 		err := conn.Select(m.method("findOne"), map[string]interface{}{
-			"id": id,
+			"Id": id,
 		})(&resp)
 		return resp, err
 	}
@@ -111,7 +117,7 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 
 	func (m *defaultTtModel) Delete(conn gobatis.GoBatis, id int64) (affected int64, err error) {
 		affected, err = conn.Delete(m.method("delete"), map[string]interface{}{
-			"id": id,
+			"Id": id,
 		})
 		return
 	}
