@@ -7,6 +7,7 @@ type (
 	}
 
 	default{{.upperStartCamelObject}}Model struct {
+		conn  gobatis.GoBatis
 		table string
 	}
 

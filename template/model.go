@@ -6,6 +6,7 @@ var Model = `package {{.pkg}}
 {{.toString}}
 {{.new}}
 {{.method}}
+{{.withConn}}
 {{.insert}}
 {{.find}}
 {{.update}}

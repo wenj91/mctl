@@ -254,6 +254,11 @@ func (g *defaultGenerator) genModel(in parser.Table, withCache bool) (string, st
 		return "", "", err
 	}
 
+	withConnCode, withConnMethodCode, err := genWithConn(table)
+	if err != nil {
+		return "", "", err
+	}
+
 	insertCode, insertCodeMethod, insertCodeMapper, err := genInsert(table, withCache)
 	if err != nil {
 		return "", "", err
@@ -303,7 +308,7 @@ func (g *defaultGenerator) genModel(in parser.Table, withCache bool) (string, st
 	}
 
 	var list []string
-	list = append(list, insertCodeMethod, insertSelectiveCodeMethod, findOneCodeMethod, ret.findOneInterfaceMethod, findSelectiveCodeMethod, updateCodeMethod, updateSelectiveCodeMethod, deleteCodeMethod)
+	list = append(list, withConnMethodCode, insertCodeMethod, insertSelectiveCodeMethod, findOneCodeMethod, ret.findOneInterfaceMethod, findSelectiveCodeMethod, updateCodeMethod, updateSelectiveCodeMethod, deleteCodeMethod)
 	typesCode, err := genTypes(table, strings.Join(modelutil.TrimStringSlice(list), util.NL), withCache)
 	if err != nil {
 		return "", "", err
@@ -341,6 +346,7 @@ func (g *defaultGenerator) genModel(in parser.Table, withCache bool) (string, st
 		"new":         newCode,
 		"toString":    toStringCode,
 		"method":      methodCode,
+		"withConn":    withConnCode,
 		"insert":      strings.Join(insertCodes, "\n"),
 		"find":        strings.Join(findCode, "\n"),
 		"update":      strings.Join(updateCodes, "\n"),

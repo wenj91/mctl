@@ -1,15 +1,15 @@
 package template
 
 var Insert = `
-func (m *default{{.upperStartCamelObject}}Model) Insert(conn gobatis.GoBatis, data *{{.upperStartCamelObject}}) (id int64, affected int64, err error) {
-	id, affected, err = conn.Insert(m.method("save"), data)
+func (m *default{{.upperStartCamelObject}}Model) Insert(data *{{.upperStartCamelObject}}) (id int64, affected int64, err error) {
+	id, affected, err = m.conn.Insert(m.method("save"), data)
 	return
 }
 `
 
 var InsertSelective = `
-func (m *default{{.upperStartCamelObject}}Model) InsertSelective(conn gobatis.GoBatis, data *{{.upperStartCamelObject}}) (id int64, affected int64, err error) {
-	id, affected, err = conn.Insert(m.method("saveSelective"), data)
+func (m *default{{.upperStartCamelObject}}Model) InsertSelective(data *{{.upperStartCamelObject}}) (id int64, affected int64, err error) {
+	id, affected, err = m.conn.Insert(m.method("saveSelective"), data)
 	return
 }
 `
@@ -38,5 +38,5 @@ var InsertMapper = `
   </insert>
 `
 
-var InsertMethod = `Insert(conn gobatis.GoBatis, data *{{.upperStartCamelObject}}) (id int64, affected int64, err error) `
-var InsertSelectiveMethod = `InsertSelective(conn gobatis.GoBatis, data *{{.upperStartCamelObject}}) (id int64, affected int64, err error) `
+var InsertMethod = `Insert(data *{{.upperStartCamelObject}}) (id int64, affected int64, err error) `
+var InsertSelectiveMethod = `InsertSelective(data *{{.upperStartCamelObject}}) (id int64, affected int64, err error) `

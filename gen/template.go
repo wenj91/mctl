@@ -51,6 +51,8 @@ const (
 	varTemplateFile                        = "var.tpl"
 	errTemplateFile                        = "err.tpl"
 	toStringTemplateFile                   = "to-string.tpl"
+	withConnTemplateFile                   = "with-conn.tpl"
+	withConnMethodTemplateFile             = "interface-with-conn.tpl"
 )
 
 var templates = map[string]string{
@@ -94,6 +96,8 @@ var templates = map[string]string{
 	varTemplateFile:                        template.Vars,
 	errTemplateFile:                        template.Error,
 	toStringTemplateFile:                   template.ToStr,
+	withConnTemplateFile:                   template.WithConn,
+	withConnMethodTemplateFile:             template.WithConnMethod,
 }
 
 func Category() string {

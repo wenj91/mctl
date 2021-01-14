@@ -1,8 +1,8 @@
 package template
 
 var Delete = `
-func (m *default{{.upperStartCamelObject}}Model) Delete(conn gobatis.GoBatis, {{.lowerStartCamelPrimaryKey}} {{.dataType}}) (affected int64, err error) {
-	affected, err = conn.Delete(m.method("delete"), map[string]interface{}{
+func (m *default{{.upperStartCamelObject}}Model) Delete({{.lowerStartCamelPrimaryKey}} {{.dataType}}) (affected int64, err error) {
+	affected, err = m.conn.Delete(m.method("delete"), map[string]interface{}{
 		"{{.upperStartCamelObject}}": {{.lowerStartCamelPrimaryKey}},
 	})
 	return
@@ -15,4 +15,4 @@ var DeleteMapper = `
     where {{.field}} = {{print "#{" .value print "}"}}
   </delete>`
 
-var DeleteMethod = `Delete(conn gobatis.GoBatis, {{.lowerStartCamelPrimaryKey}} {{.dataType}}) (affected int64, err error) `
+var DeleteMethod = `Delete({{.lowerStartCamelPrimaryKey}} {{.dataType}}) (affected int64, err error) `
