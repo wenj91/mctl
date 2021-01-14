@@ -21,8 +21,8 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
     ```Plain Text
     ./model
 	├── mappers
-	│   └── ttmapper.xml
-	├── ttmodel.go
+	│   └── testuserinfomapper.xml
+	├── testuserinfomodel.go
 	└── vars.go
     ```
 
@@ -35,38 +35,44 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 * 生成代码示例
   
 	```go
-
 	package model
 
 	import (
 		"encoding/json"
+		"time"
 
 		"github.com/wenj91/gobatis"
 	)
 
 	type (
-		TtModel interface {
-			Insert(conn gobatis.GoBatis, data *Tt) (id int64, affected int64, err error)
-			InsertSelective(conn gobatis.GoBatis, data *Tt) (id int64, affected int64, err error)
-			FindOne(conn gobatis.GoBatis, id int64) (*Tt, error)
-			Update(conn gobatis.GoBatis, data *Tt) (affected int64, err error)
-			UpdateSelective(conn gobatis.GoBatis, data *Tt) (affected int64, err error)
-			Delete(conn gobatis.GoBatis, id int64) (affected int64, err error)
+		TestUserInfoModel interface {
+			WithConn(conn gobatis.GoBatis) TestUserInfoModel
+			Insert(data *TestUserInfo) (id int64, affected int64, err error)
+			InsertSelective(data *TestUserInfo) (id int64, affected int64, err error)
+			FindOne(id int64) (*TestUserInfo, error)
+			FindOneByNanosecond(nanosecond int64) (*TestUserInfo, error)
+			FindSelective(data *TestUserInfo) ([]*TestUserInfo, error)
+			Update(data *TestUserInfo) (affected int64, err error)
+			UpdateSelective(data *TestUserInfo) (affected int64, err error)
+			Delete(id int64) (affected int64, err error)
 		}
 
-		defaultTtModel struct {
+		defaultTestUserInfoModel struct {
+			conn  gobatis.GoBatis
 			table string
 		}
 
-		Tt struct {
-			Id        int64 `field:"id" json:"id"`
-			Aid       int64 `field:"aid" json:"aid"`
-			C         int64 `field:"c" json:"c"`
-			NewColumn int64 `field:"new_column" json:"newColumn"`
+		TestUserInfo struct {
+			Id         int64              `field:"id" json:"id"`
+			Nanosecond int64              `field:"nanosecond" json:"nanosecond"`
+			Data       string             `field:"data" json:"data"`
+			Content    gobatis.NullString `field:"content" json:"content"`
+			CreateTime time.Time          `field:"create_time" json:"createTime"`
+			UpdateTime time.Time          `field:"update_time" json:"updateTime"`
 		}
 	)
 
-	func (m *Tt) ToString() string {
+	func (m *TestUserInfo) ToString() string {
 		str := ""
 
 		bs, err := json.Marshal(m)
@@ -77,46 +83,68 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 		return str
 	}
 
-	func NewTtModel() TtModel {
-		return &defaultTtModel{
-			table: "`tt`",
+	func NewTestUserInfoModel(conn gobatis.GoBatis) TestUserInfoModel {
+		return &defaultTestUserInfoModel{
+			conn:  conn,
+			table: "`test_user_info`",
 		}
 	}
 
-	func (m *defaultTtModel) method(mt string) string {
-		return "TtMapper." + mt
+	func (m *defaultTestUserInfoModel) method(mt string) string {
+		return "TestUserInfoMapper." + mt
 	}
 
-	func (m *defaultTtModel) Insert(conn gobatis.GoBatis, data *Tt) (id int64, affected int64, err error) {
-		id, affected, err = conn.Insert(m.method("save"), data)
+	func (m *defaultTestUserInfoModel) WithConn(conn gobatis.GoBatis) TestUserInfoModel {
+		return &defaultTestUserInfoModel{
+			conn:  conn,
+			table: "test_user_info",
+		}
+	}
+
+	func (m *defaultTestUserInfoModel) Insert(data *TestUserInfo) (id int64, affected int64, err error) {
+		id, affected, err = m.conn.Insert(m.method("save"), data)
 		return
 	}
 
-	func (m *defaultTtModel) InsertSelective(conn gobatis.GoBatis, data *Tt) (id int64, affected int64, err error) {
-		id, affected, err = conn.Insert(m.method("saveSelective"), data)
+	func (m *defaultTestUserInfoModel) InsertSelective(data *TestUserInfo) (id int64, affected int64, err error) {
+		id, affected, err = m.conn.Insert(m.method("saveSelective"), data)
 		return
 	}
 
-	func (m *defaultTtModel) FindOne(conn gobatis.GoBatis, id int64) (*Tt, error) {
-		var resp *Tt
-		err := conn.Select(m.method("findOne"), map[string]interface{}{
+	func (m *defaultTestUserInfoModel) FindOne(id int64) (*TestUserInfo, error) {
+		var resp *TestUserInfo
+		err := m.conn.Select(m.method("findOne"), map[string]interface{}{
 			"Id": id,
 		})(&resp)
 		return resp, err
 	}
 
-	func (m *defaultTtModel) Update(conn gobatis.GoBatis, data *Tt) (affected int64, err error) {
-		affected, err = conn.Update(m.method("update"), data)
+	func (m *defaultTestUserInfoModel) FindOneByNanosecond(nanosecond int64) (*TestUserInfo, error) {
+		var resp *TestUserInfo
+		err := m.conn.Select(m.method("findOneByNanosecond"), map[string]interface{}{
+			"Nanosecond": nanosecond,
+		})(&resp)
+		return resp, err
+	}
+
+	func (m *defaultTestUserInfoModel) FindSelective(data *TestUserInfo) ([]*TestUserInfo, error) {
+		resp := make([]*TestUserInfo, 0)
+		err := m.conn.Select(m.method("findSelective"), data)(&resp)
+		return resp, err
+	}
+
+	func (m *defaultTestUserInfoModel) Update(data *TestUserInfo) (affected int64, err error) {
+		affected, err = m.conn.Update(m.method("update"), data)
 		return
 	}
 
-	func (m *defaultTtModel) UpdateSelective(conn gobatis.GoBatis, data *Tt) (affected int64, err error) {
-		affected, err = conn.Update(m.method("updateSelective"), data)
+	func (m *defaultTestUserInfoModel) UpdateSelective(data *TestUserInfo) (affected int64, err error) {
+		affected, err = m.conn.Update(m.method("updateSelective"), data)
 		return
 	}
 
-	func (m *defaultTtModel) Delete(conn gobatis.GoBatis, id int64) (affected int64, err error) {
-		affected, err = conn.Delete(m.method("delete"), map[string]interface{}{
+	func (m *defaultTestUserInfoModel) Delete(id int64) (affected int64, err error) {
+		affected, err = m.conn.Delete(m.method("delete"), map[string]interface{}{
 			"Id": id,
 		})
 		return
@@ -130,91 +158,120 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 	<?xml version="1.0" encoding="utf-8"?>
 	<!DOCTYPE mapper PUBLIC "gobatis"
 			"https://raw.githubusercontent.com/wenj91/gobatis/master/gobatis.dtd">
-	<mapper namespace="TtMapper">
-	
-	<sql id="Base_Column_List">
-		id,aid,c,new_column
-	</sql>
-
-
-	<insert id="save">
-		insert into tt (id, aid, c, new_column)
-		values (#{id},#{aid},#{c},#{new_column})
-	</insert>
-
-	<insert id="saveSelective">
-		insert into tt
-		<trim prefix="(" suffix=")" suffixOverrides=",">
-		<if test="Id != nil and Id != ''">
-			id,  
-		</if>
-		<if test="Aid != nil and Aid != ''">
-			aid,  
-		</if>
-		<if test="C != nil and C != ''">
-			c,  
-		</if>
-		<if test="NewColumn != nil and NewColumn != ''">
-			new_column,  
-		</if>
-		</trim>
-		<trim prefix="values (" suffix=")" suffixOverrides=",">
-		<if test="Id != nil and Id != ''">
-			#{Id},
-		</if>
-		<if test="Aid != nil and Aid != ''">
-			#{Aid},
-		</if>
-		<if test="C != nil and C != ''">
-			#{C},
-		</if>
-		<if test="NewColumn != nil and NewColumn != ''">
-			#{NewColumn},
-		</if>
-		</trim>
-	</insert>
-
-
-	<update id="update">
-		update tt
-		set aid = #{Aid},
-		c = #{C},
-		new_column = #{NewColumn}
-		where id = #{Id}
-	</update>
-
-	<update id="updateSelective">
-		update tt
-		<set>
-		<if test="Aid != nil and Aid != ''">
-			aid = #{Aid},
-		</if>
-		<if test="C != nil and C != ''">
-			c = #{C},
-		</if>
-		<if test="NewColumn != nil and NewColumn != ''">
-			new_column = #{NewColumn},
-		</if>
-		</set>
-		where id = #{Id}
-	</update>
-
-
-	<delete id="delete">
-		delete from tt
-		where id = #{Id}
-	</delete>
-
-	<select id="findOne" resultType="struct">
-		select 
-		<include refid="Base_Column_List" />
-		from tt
-		where id = #{Id}
-		limit 1
-	</select>
-
+	<mapper namespace="TestUserInfoMapper">
+		<sql id="Base_Column_List">
+			id,nanosecond,data,content,create_time,update_time
+		</sql>
+		<insert id="save">
+			insert into test_user_info (id, nanosecond, data, content, create_time, update_time)
+			values (#{id},#{nanosecond},#{data},#{content},#{create_time},#{update_time})
+		</insert>
+		<insert id="saveSelective">
+			insert into test_user_info
+			<trim prefix="(" suffix=")" suffixOverrides=",">
+				<if test="Id != nil and Id != ''">
+					id,  
+				</if>
+				<if test="Nanosecond != nil and Nanosecond != ''">
+					nanosecond,  
+				</if>
+				<if test="Data != nil and Data != ''">
+					data,  
+				</if>
+				<if test="Content != nil and Content != ''">
+					content,  
+				</if>
+				<if test="CreateTime != nil and CreateTime != ''">
+					create_time,  
+				</if>
+				<if test="UpdateTime != nil and UpdateTime != ''">
+					update_time,  
+				</if>
+			</trim>
+			<trim prefix="values (" suffix=")" suffixOverrides=",">
+				<if test="Id != nil and Id != ''">
+					#{Id},
+				</if>
+				<if test="Nanosecond != nil and Nanosecond != ''">
+					#{Nanosecond},
+				</if>
+				<if test="Data != nil and Data != ''">
+					#{Data},
+				</if>
+				<if test="Content != nil and Content != ''">
+					#{Content},
+				</if>
+				<if test="CreateTime != nil and CreateTime != ''">
+					#{CreateTime},
+				</if>
+				<if test="UpdateTime != nil and UpdateTime != ''">
+					#{UpdateTime},
+				</if>
+			</trim>
+		</insert>
+		<update id="update">
+			update test_user_info
+			set nanosecond = #{Nanosecond},
+			data = #{Data},
+			content = #{Content}
+			where id = #{Id}
+		</update>
+		<update id="updateSelective">
+			update test_user_info
+			<set>
+				<if test="Nanosecond != nil and Nanosecond != ''">
+					nanosecond = #{Nanosecond},
+				</if>
+				<if test="Data != nil and Data != ''">
+					data = #{Data},
+				</if>
+				<if test="Content != nil and Content != ''">
+					content = #{Content},
+				</if>
+			</set>
+			where id = #{Id}
+		</update>
+		<delete id="delete">
+			delete from test_user_info
+			where id = #{Id}
+		</delete>
+		<select id="findOne" resultType="struct">
+			select 
+			<include refid="Base_Column_List" />
+			from test_user_info
+			where id = #{Id}
+			limit 1
+		</select>
+		<select id="findOneByNanosecond" resultType="struct">
+			select 
+			<include refid="Base_Column_List" />
+			from test_user_info
+			where nanosecond = #{Nanosecond}
+			limit 1
+		</select>
+		<select id="findSelective" resultType="structs">
+			select 
+			<include refid="Base_Column_List" />
+			from test_user_info
+			<where>
+				<if test="Nanosecond != nil and Nanosecond != ''">
+					and nanosecond = #{Nanosecond}
+				</if>
+				<if test="Data != nil and Data != ''">
+					and data = #{Data}
+				</if>
+				<if test="Content != nil and Content != ''">
+					and content = #{Content}
+				</if>
+				<if test="CreateTime != nil and CreateTime != ''">
+					and create_time = #{CreateTime}
+				</if>
+				<if test="UpdateTime != nil and UpdateTime != ''">
+					and update_time = #{UpdateTime}
+				</if>
+			</where>
+		</select>
 	</mapper>
-
 	```
 
 ## 用法
