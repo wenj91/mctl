@@ -3,7 +3,7 @@ package template
 var Delete = `
 func (m *default{{.upperStartCamelObject}}Model) Delete({{.lowerStartCamelPrimaryKey}} {{.dataType}}) (affected int64, err error) {
 	affected, err = m.conn.Delete(m.method("delete"), map[string]interface{}{
-		"{{.upperStartCamelObject}}": {{.lowerStartCamelPrimaryKey}},
+		"{{.upperStartCamelPrimaryKey}}": {{.lowerStartCamelPrimaryKey}},
 	})
 	return
 }

@@ -5,7 +5,7 @@ var FindOne = `
 func (m *default{{.upperStartCamelObject}}Model) FindOne({{.lowerStartCamelPrimaryKey}} {{.dataType}}) (*{{.upperStartCamelObject}}, error) {
 	var resp *{{.upperStartCamelObject}}
 	err := m.conn.Select(m.method("findOne"), map[string]interface{}{
-		"{{.upperStartCamelObject}}": {{.lowerStartCamelPrimaryKey}},
+		"{{.upperStartCamelPrimaryKey}}": {{.lowerStartCamelPrimaryKey}},
 	})(&resp)
 	return resp, err
 }
