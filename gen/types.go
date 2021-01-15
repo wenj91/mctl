@@ -2,6 +2,7 @@ package gen
 
 import (
 	"github.com/tal-tech/go-zero/tools/goctl/util"
+	"github.com/tal-tech/go-zero/tools/goctl/util/stringx"
 	"github.com/wenj91/mctl/template"
 )
 
@@ -22,6 +23,7 @@ func genTypes(table Table, methods string, withCache bool) (string, error) {
 		Execute(map[string]interface{}{
 			"withCache":             withCache,
 			"method":                methods,
+			"lowerStartCamelObject": stringx.From(table.Name.ToCamel()).Untitle(),
 			"upperStartCamelObject": table.Name.ToCamel(),
 			"fields":                fieldsString,
 		})

@@ -2,6 +2,10 @@ package template
 
 var Types = `
 type (
+	{{.upperStartCamelObject}}FindResult struct {
+		{{.lowerStartCamelObject}}s []*{{.upperStartCamelObject}}
+	}
+
 	{{.upperStartCamelObject}}Model interface{
 		{{.method}}
 	}

@@ -22,10 +22,32 @@ var FindOneMapper = `
 `
 
 var FindSelective = `
-func (m *default{{.upperStartCamelObject}}Model) FindSelective(data *{{.upperStartCamelObject}}) ([]*{{.upperStartCamelObject}}, error) {
+func (m *default{{.upperStartCamelObject}}Model) FindSelective(data *{{.upperStartCamelObject}}) (*{{.upperStartCamelObject}}FindResult, error) {
   resp := make([]*{{.upperStartCamelObject}}, 0)
 	err := m.conn.Select(m.method("findSelective"), data)(&resp)
-	return resp, err
+	return &{{.upperStartCamelObject}}FindResult{
+    {{.lowerStartCamelObject}}s: resp,
+  }, err
+}
+`
+
+var FindSelectiveResultMethod = `
+func new{{.upperStartCamelObject}}FindResult({{.lowerStartCamelObject}}s []*{{.upperStartCamelObject}}) *{{.upperStartCamelObject}}FindResult {
+	return &{{.upperStartCamelObject}}FindResult{
+		{{.lowerStartCamelObject}}s: {{.lowerStartCamelObject}}s,
+	}
+}
+
+func (r *{{.upperStartCamelObject}}FindResult) List() []*{{.upperStartCamelObject}} {
+	return r.{{.lowerStartCamelObject}}s
+}
+
+func (r *{{.upperStartCamelObject}}FindResult) One() *{{.upperStartCamelObject}} {
+	if len(r.{{.lowerStartCamelObject}}s) == 0 {
+		return nil
+	}
+
+	return r.{{.lowerStartCamelObject}}s[0]
 }
 `
 
@@ -78,4 +100,4 @@ func (m *default{{.upperStartCamelObject}}Model) queryPrimary(conn sqlx.SqlConn,
 
 var FindOneMethod = `FindOne({{.lowerStartCamelPrimaryKey}} {{.dataType}}) (*{{.upperStartCamelObject}}, error) `
 var FindOneByFieldMethod = `FindOneBy{{.upperField}}({{.in}}) (*{{.upperStartCamelObject}}, error) `
-var FindSelectiveMethod = `FindSelective(data *{{.upperStartCamelObject}}) ([]*{{.upperStartCamelObject}}, error) `
+var FindSelectiveMethod = `FindSelective(data *{{.upperStartCamelObject}}) (*{{.upperStartCamelObject}}FindResult, error) `

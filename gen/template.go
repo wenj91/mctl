@@ -25,6 +25,7 @@ const (
 	findSelectiveMapperTemplateFile        = "mapper-find-selective.tpl"
 	findSelectiveMethodTemplateFile        = "interface-find-selective.tpl"
 	findSelectiveIfFieldValuesTemplateFile = "if-field-value-find-selective.tpl"
+	findSelectiveResultMethodTemplateFile  = "result-find-selective.tpl"
 	importsTemplateFile                    = "import.tpl"
 	importsWithNoCacheTemplateFile         = "import-no-cache.tpl"
 	insertTemplateFile                     = "insert.tpl"
@@ -63,6 +64,7 @@ var templates = map[string]string{
 	findSelectiveMapperTemplateFile:        template.FindSelectiveMapper,
 	findSelectiveMethodTemplateFile:        template.FindSelectiveMethod,
 	findSelectiveIfFieldValuesTemplateFile: template.FindSelectiveIfFieldValue,
+	findSelectiveResultMethodTemplateFile:  template.FindSelectiveResultMethod,
 	fieldTemplateFile:                      template.Field,
 	findOneTemplateFile:                    template.FindOne,
 	findOneMethodTemplateFile:              template.FindOneMethod,

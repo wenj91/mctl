@@ -35,8 +35,6 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 * 生成代码示例
   
 	```go
-	package model
-
 	import (
 		"encoding/json"
 		"time"
@@ -45,13 +43,17 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 	)
 
 	type (
+		TestUserInfoFindResult struct {
+			testUserInfos []*TestUserInfo
+		}
+
 		TestUserInfoModel interface {
 			WithConn(conn gobatis.GoBatis) TestUserInfoModel
 			Insert(data *TestUserInfo) (id int64, affected int64, err error)
 			InsertSelective(data *TestUserInfo) (id int64, affected int64, err error)
 			FindOne(id int64) (*TestUserInfo, error)
 			FindOneByNanosecond(nanosecond int64) (*TestUserInfo, error)
-			FindSelective(data *TestUserInfo) ([]*TestUserInfo, error)
+			FindSelective(data *TestUserInfo) (*TestUserInfoFindResult, error)
 			Update(data *TestUserInfo) (affected int64, err error)
 			UpdateSelective(data *TestUserInfo) (affected int64, err error)
 			Delete(id int64) (affected int64, err error)
@@ -81,6 +83,24 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 		}
 
 		return str
+	}
+
+	func newTestUserInfoFindResult(testUserInfos []*TestUserInfo) *TestUserInfoFindResult {
+		return &TestUserInfoFindResult{
+			testUserInfos: testUserInfos,
+		}
+	}
+
+	func (r *TestUserInfoFindResult) List() []*TestUserInfo {
+		return r.testUserInfos
+	}
+
+	func (r *TestUserInfoFindResult) One() *TestUserInfo {
+		if len(r.testUserInfos) == 0 {
+			return nil
+		}
+
+		return r.testUserInfos[0]
 	}
 
 	func NewTestUserInfoModel(conn gobatis.GoBatis) TestUserInfoModel {
@@ -127,10 +147,12 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 		return resp, err
 	}
 
-	func (m *defaultTestUserInfoModel) FindSelective(data *TestUserInfo) ([]*TestUserInfo, error) {
+	func (m *defaultTestUserInfoModel) FindSelective(data *TestUserInfo) (*TestUserInfoFindResult, error) {
 		resp := make([]*TestUserInfo, 0)
 		err := m.conn.Select(m.method("findSelective"), data)(&resp)
-		return resp, err
+		return &TestUserInfoFindResult{
+			testUserInfos: resp,
+		}, err
 	}
 
 	func (m *defaultTestUserInfoModel) Update(data *TestUserInfo) (affected int64, err error) {

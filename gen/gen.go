@@ -254,6 +254,11 @@ func (g *defaultGenerator) genModel(in parser.Table, withCache bool) (string, st
 		return "", "", err
 	}
 
+	findSelectiveResultCode, err := genFindSelectiveResult(table, withCache)
+	if err != nil {
+		return "", "", err
+	}
+
 	withConnCode, withConnMethodCode, err := genWithConn(table)
 	if err != nil {
 		return "", "", err
@@ -339,19 +344,20 @@ func (g *defaultGenerator) genModel(in parser.Table, withCache bool) (string, st
 	}
 
 	output, err := t.Execute(map[string]interface{}{
-		"pkg":         g.pkg,
-		"imports":     importsCode,
-		"vars":        varsCode,
-		"types":       typesCode,
-		"new":         newCode,
-		"toString":    toStringCode,
-		"method":      methodCode,
-		"withConn":    withConnCode,
-		"insert":      strings.Join(insertCodes, "\n"),
-		"find":        strings.Join(findCode, "\n"),
-		"update":      strings.Join(updateCodes, "\n"),
-		"delete":      deleteCode,
-		"extraMethod": ret.cacheExtra,
+		"pkg":                     g.pkg,
+		"imports":                 importsCode,
+		"vars":                    varsCode,
+		"types":                   typesCode,
+		"new":                     newCode,
+		"toString":                toStringCode,
+		"findSelectiveResultCode": findSelectiveResultCode,
+		"method":                  methodCode,
+		"withConn":                withConnCode,
+		"insert":                  strings.Join(insertCodes, "\n"),
+		"find":                    strings.Join(findCode, "\n"),
+		"update":                  strings.Join(updateCodes, "\n"),
+		"delete":                  deleteCode,
+		"extraMethod":             ret.cacheExtra,
 	})
 	if err != nil {
 		return "", "", err
