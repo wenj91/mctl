@@ -113,15 +113,15 @@ func Parse(ddl string) (*Table, error) {
 			comment = string(column.Type.Comment.Val)
 		}
 		var isDefaultNull = true
-		if column.Type.NotNull {
-			isDefaultNull = false
-		} else {
-			if column.Type.Default == nil {
-				isDefaultNull = false
-			} else if string(column.Type.Default.Val) != "null" {
-				isDefaultNull = false
-			}
-		}
+		//if column.Type.NotNull {
+		//	isDefaultNull = false
+		//} else {
+		//	if column.Type.Default == nil {
+		//		isDefaultNull = false
+		//	} else if string(column.Type.Default.Val) != "null" {
+		//		isDefaultNull = false
+		//	}
+		//}
 		dataType, err := converter.ConvertDataType(column.Type.Type, isDefaultNull)
 		if err != nil {
 			return nil, err
