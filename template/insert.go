@@ -14,12 +14,12 @@ func (m *default{{.upperStartCamelObject}}Model) InsertSelective(data *{{.upperS
 }
 `
 
-var InsertIfField = `      <if test="{{.value}} != nil and {{.value}} != ''">
+var InsertIfField = `      <if test="{{.value}} != nil">
         {{.field}},  
       </if>
 `
 
-var InsertIfValue = `      <if test="{{.value}} != nil and {{.value}} != ''">
+var InsertIfValue = `      <if test="{{.value}} != nil">
         #{{print "{" .value print "}"}},
       </if>
 `

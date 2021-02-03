@@ -12,7 +12,45 @@ import (
 func genFields(fields []parser.Field) (string, error) {
 	var list []string
 	for _, field := range fields {
-		result, err := genField(field)
+
+		if strings.Contains(field.DataType, "NullTime") {
+
+			name := "start_" + field.Name.Source()
+			startField := parser.Field{
+				Name:         stringx.From(name),
+				DataBaseType: field.DataBaseType,
+				DataType:     field.DataType,
+				IsPrimaryKey: field.IsPrimaryKey,
+				IsUniqueKey:  field.IsUniqueKey,
+				Comment:      field.Comment,
+			}
+
+			result, err := genField(startField, false)
+			if err != nil {
+				return "", err
+			}
+
+			list = append(list, result)
+
+			endName := "end_" + field.Name.Source()
+			endField := parser.Field{
+				Name:         stringx.From(endName),
+				DataBaseType: field.DataBaseType,
+				DataType:     field.DataType,
+				IsPrimaryKey: field.IsPrimaryKey,
+				IsUniqueKey:  field.IsUniqueKey,
+				Comment:      field.Comment,
+			}
+
+			endResult, err := genField(endField, false)
+			if err != nil {
+				return "", err
+			}
+
+			list = append(list, endResult)
+		}
+
+		result, err := genField(field, true)
 		if err != nil {
 			return "", err
 		}
@@ -22,8 +60,8 @@ func genFields(fields []parser.Field) (string, error) {
 	return strings.Join(list, "\n"), nil
 }
 
-func genField(field parser.Field) (string, error) {
-	tag, err := genTag(field.Name.Source(), stringx.From(field.Name.ToCamel()).Untitle())
+func genField(field parser.Field, isDBField bool) (string, error) {
+	tag, err := genTag(field.Name.Source(), stringx.From(field.Name.ToCamel()).Untitle(), isDBField)
 	if err != nil {
 		return "", err
 	}

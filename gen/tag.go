@@ -5,7 +5,7 @@ import (
 	"github.com/wenj91/mctl/template"
 )
 
-func genTag(in string, jsonIn string) (string, error) {
+func genTag(in string, jsonIn string, isDBField bool) (string, error) {
 	if in == "" {
 		return in, nil
 	}
@@ -17,8 +17,9 @@ func genTag(in string, jsonIn string) (string, error) {
 	output, err := util.With("tag").
 		Parse(text).
 		Execute(map[string]interface{}{
-			"field": in,
-			"json":  jsonIn,
+			"field":     in,
+			"isDBField": isDBField,
+			"json":      jsonIn,
 		})
 	if err != nil {
 		return "", err

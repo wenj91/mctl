@@ -1,3 +1,3 @@
 package template
 
-var Tag = "`field:\"{{.field}}\" json:\"{{.json}}\"`"
+var Tag = "`{{if .isDBField}}field:\"{{.field}}\" {{end}}json:\"{{.json}}\"`"

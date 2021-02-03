@@ -16,7 +16,7 @@ func (m *default{{.upperStartCamelObject}}Model) UpdateSelective(data *{{.upperS
 
 var UpdateFieldValue = `{{.field}} = #{{print "{" .value print "}"}}`
 
-var UpdateIfFieldValue = `      <if test="{{.value}} != nil and {{.value}} != ''">
+var UpdateIfFieldValue = `      <if test="{{.value}} != nil">
         {{.field}} = #{{print "{" .value print "}"}},
       </if>
 `

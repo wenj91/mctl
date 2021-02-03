@@ -59,10 +59,39 @@ func genFindSelective(table Table, withCache bool) (string, string, string, erro
 			continue
 		}
 
+		if strings.Contains(field.DataType, "NullTime") {
+			findIfFieldValueOutput, err := util.With("findSelectiveIfFieldValue").
+				Parse(text).
+				Execute(map[string]interface{}{
+					"field": field.Name.Source(),
+					"mark":  ">=",
+					"value": "Start" + field.Name.ToCamel(),
+				})
+			if err != nil {
+				return "", "", "", err
+			}
+
+			ifValues = append(ifValues, findIfFieldValueOutput.String())
+
+			findIfFieldValueOutput, err = util.With("findSelectiveIfFieldValue").
+				Parse(text).
+				Execute(map[string]interface{}{
+					"field": field.Name.Source(),
+					"mark":  "<![CDATA[<=]]>",
+					"value": "End" + field.Name.ToCamel(),
+				})
+			if err != nil {
+				return "", "", "", err
+			}
+
+			ifValues = append(ifValues, findIfFieldValueOutput.String())
+		}
+
 		findIfFieldValueOutput, err := util.With("findSelectiveIfFieldValue").
 			Parse(text).
 			Execute(map[string]interface{}{
 				"field": field.Name.Source(),
+				"mark":  "=",
 				"value": field.Name.ToCamel(),
 			})
 		if err != nil {

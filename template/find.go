@@ -51,8 +51,8 @@ func (r *{{.upperStartCamelObject}}FindResult) One() *{{.upperStartCamelObject}}
 }
 `
 
-var FindSelectiveIfFieldValue = `      <if test="{{.value}} != nil and {{.value}} != ''">
-        and {{.field}} = #{{print "{" .value print "}"}}
+var FindSelectiveIfFieldValue = `      <if test="{{.value}} != nil">
+        and {{.field}} {{.mark}} #{{print "{" .value print "}"}}
       </if>
 `
 
