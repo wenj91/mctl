@@ -35,9 +35,10 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 * 生成代码示例
   
 	```go
+	package nocache
+
 	import (
 		"encoding/json"
-		"time"
 
 		"github.com/wenj91/gobatis"
 	)
@@ -51,12 +52,12 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 			WithConn(conn gobatis.GoBatis) TestUserInfoModel
 			Insert(data *TestUserInfo) (id int64, affected int64, err error)
 			InsertSelective(data *TestUserInfo) (id int64, affected int64, err error)
-			FindOne(id int64) (*TestUserInfo, error)
-			FindOneByNanosecond(nanosecond int64) (*TestUserInfo, error)
+			FindOne(id gobatis.NullInt64) (*TestUserInfo, error)
+			FindOneByNanosecond(nanosecond gobatis.NullInt64) (*TestUserInfo, error)
 			FindSelective(data *TestUserInfo) (*TestUserInfoFindResult, error)
 			Update(data *TestUserInfo) (affected int64, err error)
 			UpdateSelective(data *TestUserInfo) (affected int64, err error)
-			Delete(id int64) (affected int64, err error)
+			Delete(id gobatis.NullInt64) (affected int64, err error)
 		}
 
 		defaultTestUserInfoModel struct {
@@ -65,12 +66,16 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 		}
 
 		TestUserInfo struct {
-			Id         int64              `field:"id" json:"id"`
-			Nanosecond int64              `field:"nanosecond" json:"nanosecond"`
-			Data       string             `field:"data" json:"data"`
-			Content    gobatis.NullString `field:"content" json:"content"`
-			CreateTime time.Time          `field:"create_time" json:"createTime"`
-			UpdateTime time.Time          `field:"update_time" json:"updateTime"`
+			Id              gobatis.NullInt64  `field:"id" json:"id"`
+			Nanosecond      gobatis.NullInt64  `field:"nanosecond" json:"nanosecond"`
+			Data            gobatis.NullString `field:"data" json:"data"`
+			Content         gobatis.NullString `field:"content" json:"content"`
+			StartCreateTime gobatis.NullTime   `json:"startCreateTime"`
+			EndCreateTime   gobatis.NullTime   `json:"endCreateTime"`
+			CreateTime      gobatis.NullTime   `field:"create_time" json:"createTime"`
+			StartUpdateTime gobatis.NullTime   `json:"startUpdateTime"`
+			EndUpdateTime   gobatis.NullTime   `json:"endUpdateTime"`
+			UpdateTime      gobatis.NullTime   `field:"update_time" json:"updateTime"`
 		}
 	)
 
@@ -131,7 +136,7 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 		return
 	}
 
-	func (m *defaultTestUserInfoModel) FindOne(id int64) (*TestUserInfo, error) {
+	func (m *defaultTestUserInfoModel) FindOne(id gobatis.NullInt64) (*TestUserInfo, error) {
 		var resp *TestUserInfo
 		err := m.conn.Select(m.method("findOne"), map[string]interface{}{
 			"Id": id,
@@ -139,7 +144,7 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 		return resp, err
 	}
 
-	func (m *defaultTestUserInfoModel) FindOneByNanosecond(nanosecond int64) (*TestUserInfo, error) {
+	func (m *defaultTestUserInfoModel) FindOneByNanosecond(nanosecond gobatis.NullInt64) (*TestUserInfo, error) {
 		var resp *TestUserInfo
 		err := m.conn.Select(m.method("findOneByNanosecond"), map[string]interface{}{
 			"Nanosecond": nanosecond,
@@ -165,12 +170,13 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 		return
 	}
 
-	func (m *defaultTestUserInfoModel) Delete(id int64) (affected int64, err error) {
+	func (m *defaultTestUserInfoModel) Delete(id gobatis.NullInt64) (affected int64, err error) {
 		affected, err = m.conn.Delete(m.method("delete"), map[string]interface{}{
 			"Id": id,
 		})
 		return
 	}
+
 
 	```
 
@@ -191,44 +197,44 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 		<insert id="saveSelective">
 			insert into test_user_info
 			<trim prefix="(" suffix=")" suffixOverrides=",">
-				<if test="Id != nil and Id != ''">
-					id,  
-				</if>
-				<if test="Nanosecond != nil and Nanosecond != ''">
-					nanosecond,  
-				</if>
-				<if test="Data != nil and Data != ''">
-					data,  
-				</if>
-				<if test="Content != nil and Content != ''">
-					content,  
-				</if>
-				<if test="CreateTime != nil and CreateTime != ''">
-					create_time,  
-				</if>
-				<if test="UpdateTime != nil and UpdateTime != ''">
-					update_time,  
-				</if>
+			<if test="Id != nil">
+				id,  
+			</if>
+			<if test="Nanosecond != nil">
+				nanosecond,  
+			</if>
+			<if test="Data != nil">
+				data,  
+			</if>
+			<if test="Content != nil">
+				content,  
+			</if>
+			<if test="CreateTime != nil">
+				create_time,  
+			</if>
+			<if test="UpdateTime != nil">
+				update_time,  
+			</if>
 			</trim>
 			<trim prefix="values (" suffix=")" suffixOverrides=",">
-				<if test="Id != nil and Id != ''">
-					#{Id},
-				</if>
-				<if test="Nanosecond != nil and Nanosecond != ''">
-					#{Nanosecond},
-				</if>
-				<if test="Data != nil and Data != ''">
-					#{Data},
-				</if>
-				<if test="Content != nil and Content != ''">
-					#{Content},
-				</if>
-				<if test="CreateTime != nil and CreateTime != ''">
-					#{CreateTime},
-				</if>
-				<if test="UpdateTime != nil and UpdateTime != ''">
-					#{UpdateTime},
-				</if>
+			<if test="Id != nil">
+				#{Id},
+			</if>
+			<if test="Nanosecond != nil">
+				#{Nanosecond},
+			</if>
+			<if test="Data != nil">
+				#{Data},
+			</if>
+			<if test="Content != nil">
+				#{Content},
+			</if>
+			<if test="CreateTime != nil">
+				#{CreateTime},
+			</if>
+			<if test="UpdateTime != nil">
+				#{UpdateTime},
+			</if>
 			</trim>
 		</insert>
 		<update id="update">
@@ -241,15 +247,15 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 		<update id="updateSelective">
 			update test_user_info
 			<set>
-				<if test="Nanosecond != nil and Nanosecond != ''">
-					nanosecond = #{Nanosecond},
-				</if>
-				<if test="Data != nil and Data != ''">
-					data = #{Data},
-				</if>
-				<if test="Content != nil and Content != ''">
-					content = #{Content},
-				</if>
+			<if test="Nanosecond != nil">
+				nanosecond = #{Nanosecond},
+			</if>
+			<if test="Data != nil">
+				data = #{Data},
+			</if>
+			<if test="Content != nil">
+				content = #{Content},
+			</if>
 			</set>
 			where id = #{Id}
 		</update>
@@ -276,21 +282,33 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 			<include refid="Base_Column_List" />
 			from test_user_info
 			<where>
-				<if test="Nanosecond != nil and Nanosecond != ''">
-					and nanosecond = #{Nanosecond}
-				</if>
-				<if test="Data != nil and Data != ''">
-					and data = #{Data}
-				</if>
-				<if test="Content != nil and Content != ''">
-					and content = #{Content}
-				</if>
-				<if test="CreateTime != nil and CreateTime != ''">
-					and create_time = #{CreateTime}
-				</if>
-				<if test="UpdateTime != nil and UpdateTime != ''">
-					and update_time = #{UpdateTime}
-				</if>
+			<if test="Nanosecond != nil">
+				and nanosecond = #{Nanosecond}
+			</if>
+			<if test="Data != nil">
+				and data = #{Data}
+			</if>
+			<if test="Content != nil">
+				and content = #{Content}
+			</if>
+			<if test="StartCreateTime != nil">
+				and create_time >= #{StartCreateTime}
+			</if>
+			<if test="EndCreateTime != nil">
+				and create_time <![CDATA[<=]]> #{EndCreateTime}
+			</if>
+			<if test="CreateTime != nil">
+				and create_time = #{CreateTime}
+			</if>
+			<if test="StartUpdateTime != nil">
+				and update_time >= #{StartUpdateTime}
+			</if>
+			<if test="EndUpdateTime != nil">
+				and update_time <![CDATA[<=]]> #{EndUpdateTime}
+			</if>
+			<if test="UpdateTime != nil">
+				and update_time = #{UpdateTime}
+			</if>
 			</where>
 		</select>
 	</mapper>
