@@ -34,7 +34,7 @@ func genFindOneByField(table Table, withCache bool) (*findOneCode, error) {
 		output, err := t.Execute(map[string]interface{}{
 			"upperStartCamelObject":     camelTableName,
 			"upperField":                camelFieldName,
-			"in":                        fmt.Sprintf("%s %s", stringx.From(camelFieldName).Untitle(), field.DataType),
+			"in":                        fmt.Sprintf("%s %s", stringx.From(camelFieldName).Untitle(), strings.ReplaceAll(field.DataType, "*", "")),
 			"withCache":                 withCache,
 			"cacheKey":                  table.CacheKey[field.Name.Source()].KeyExpression,
 			"cacheKeyVariable":          table.CacheKey[field.Name.Source()].Variable,
@@ -83,7 +83,7 @@ func genFindOneByField(table Table, withCache bool) (*findOneCode, error) {
 		output, err := t.Execute(map[string]interface{}{
 			"upperStartCamelObject": camelTableName,
 			"upperField":            camelFieldName,
-			"in":                    fmt.Sprintf("%s %s", stringx.From(camelFieldName).Untitle(), field.DataType),
+			"in":                    fmt.Sprintf("%s %s", stringx.From(camelFieldName).Untitle(), strings.ReplaceAll(field.DataType, "*", "")),
 		})
 		if err != nil {
 			return nil, err

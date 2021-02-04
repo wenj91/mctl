@@ -59,7 +59,7 @@ func genFindSelective(table Table, withCache bool) (string, string, string, erro
 			continue
 		}
 
-		if strings.Contains(field.DataType, "NullTime") {
+		if strings.Contains(field.DataType, "Time") {
 			findIfFieldValueOutput, err := util.With("findSelectiveIfFieldValue").
 				Parse(text).
 				Execute(map[string]interface{}{

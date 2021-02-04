@@ -24,7 +24,7 @@ func genFindOne(table Table, withCache bool) (string, string, string, error) {
 			"originalPrimaryKey":        wrapWithRawString(table.PrimaryKey.Name.Source()),
 			"upperStartCamelPrimaryKey": table.PrimaryKey.Name.ToCamel(),
 			"lowerStartCamelPrimaryKey": stringx.From(table.PrimaryKey.Name.ToCamel()).Untitle(),
-			"dataType":                  table.PrimaryKey.DataType,
+			"dataType":                  strings.ReplaceAll(table.PrimaryKey.DataType, "*", ""),
 			"cacheKey":                  table.CacheKey[table.PrimaryKey.Name.Source()].KeyExpression,
 			"cacheKeyVariable":          table.CacheKey[table.PrimaryKey.Name.Source()].Variable,
 		})
@@ -42,7 +42,7 @@ func genFindOne(table Table, withCache bool) (string, string, string, error) {
 		Execute(map[string]interface{}{
 			"upperStartCamelObject":     camel,
 			"lowerStartCamelPrimaryKey": stringx.From(table.PrimaryKey.Name.ToCamel()).Untitle(),
-			"dataType":                  table.PrimaryKey.DataType,
+			"dataType":                  strings.ReplaceAll(table.PrimaryKey.DataType, "*", ""),
 		})
 	if err != nil {
 		return "", "", "", err

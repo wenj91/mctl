@@ -22,7 +22,7 @@ var FindOneMapper = `
 `
 
 var FindSelective = `
-func (m *default{{.upperStartCamelObject}}Model) FindSelective(data *{{.upperStartCamelObject}}) (*{{.upperStartCamelObject}}FindResult, error) {
+func (m *default{{.upperStartCamelObject}}Model) FindSelective(data *{{.upperStartCamelObject}}Selective) (*{{.upperStartCamelObject}}FindResult, error) {
   resp := make([]*{{.upperStartCamelObject}}, 0)
 	err := m.conn.Select(m.method("findSelective"), data)(&resp)
 	return &{{.upperStartCamelObject}}FindResult{
@@ -100,4 +100,4 @@ func (m *default{{.upperStartCamelObject}}Model) queryPrimary(conn sqlx.SqlConn,
 
 var FindOneMethod = `FindOne({{.lowerStartCamelPrimaryKey}} {{.dataType}}) (*{{.upperStartCamelObject}}, error) `
 var FindOneByFieldMethod = `FindOneBy{{.upperField}}({{.in}}) (*{{.upperStartCamelObject}}, error) `
-var FindSelectiveMethod = `FindSelective(data *{{.upperStartCamelObject}}) (*{{.upperStartCamelObject}}FindResult, error) `
+var FindSelectiveMethod = `FindSelective(data *{{.upperStartCamelObject}}Selective) (*{{.upperStartCamelObject}}FindResult, error) `

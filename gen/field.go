@@ -9,11 +9,12 @@ import (
 	"github.com/wenj91/mctl/template"
 )
 
-func genFields(fields []parser.Field) (string, error) {
+func genFields(fields []parser.Field) (string, string, error) {
 	var list []string
+	var selectiveList []string
 	for _, field := range fields {
 
-		if strings.Contains(field.DataType, "NullTime") {
+		if strings.Contains(field.DataType, "Time") {
 
 			name := "start_" + field.Name.Source()
 			startField := parser.Field{
@@ -25,12 +26,12 @@ func genFields(fields []parser.Field) (string, error) {
 				Comment:      field.Comment,
 			}
 
-			result, err := genField(startField, false)
+			result, err := genSelectiveField(startField, false)
 			if err != nil {
-				return "", err
+				return "", "", err
 			}
 
-			list = append(list, result)
+			selectiveList = append(selectiveList, result)
 
 			endName := "end_" + field.Name.Source()
 			endField := parser.Field{
@@ -42,22 +43,29 @@ func genFields(fields []parser.Field) (string, error) {
 				Comment:      field.Comment,
 			}
 
-			endResult, err := genField(endField, false)
+			endResult, err := genSelectiveField(endField, false)
 			if err != nil {
-				return "", err
+				return "", "", err
 			}
 
-			list = append(list, endResult)
+			selectiveList = append(selectiveList, endResult)
 		}
 
 		result, err := genField(field, true)
 		if err != nil {
-			return "", err
+			return "", "", err
 		}
 
 		list = append(list, result)
+
+		selectiveResult, err := genSelectiveField(field, true)
+		if err != nil {
+			return "", "", err
+		}
+		selectiveList = append(selectiveList, selectiveResult)
 	}
-	return strings.Join(list, "\n"), nil
+
+	return strings.Join(list, "\n"), strings.Join(selectiveList, "\n"), nil
 }
 
 func genField(field parser.Field, isDBField bool) (string, error) {
@@ -77,6 +85,33 @@ func genField(field parser.Field, isDBField bool) (string, error) {
 			"name":       field.Name.ToCamel(),
 			"type":       field.DataType,
 			"tag":        tag,
+			"hasComment": field.Comment != "",
+			"comment":    field.Comment,
+		})
+	if err != nil {
+		return "", err
+	}
+
+	return output.String(), nil
+}
+
+func genSelectiveField(field parser.Field, isDBField bool) (string, error) {
+	//tag, err := genTag(field.Name.Source(), stringx.From(field.Name.ToCamel()).Untitle(), isDBField)
+	//if err != nil {
+	//	return "", err
+	//}
+
+	text, err := util.LoadTemplate(category, fieldTemplateFile, template.Field)
+	if err != nil {
+		return "", err
+	}
+
+	output, err := util.With("types").
+		Parse(text).
+		Execute(map[string]interface{}{
+			"name":       field.Name.ToCamel(),
+			"type":       field.DataType,
+			"tag":        "",
 			"hasComment": field.Comment != "",
 			"comment":    field.Comment,
 		})

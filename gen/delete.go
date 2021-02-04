@@ -35,7 +35,7 @@ func genDelete(table Table, withCache bool) (string, string, string, error) {
 			"containsIndexCache":        table.ContainsUniqueKey,
 			"upperStartCamelPrimaryKey": table.PrimaryKey.Name.ToCamel(),
 			"lowerStartCamelPrimaryKey": stringx.From(table.PrimaryKey.Name.ToCamel()).Untitle(),
-			"dataType":                  table.PrimaryKey.DataType,
+			"dataType":                  strings.ReplaceAll(table.PrimaryKey.DataType, "*", ""),
 			"keys":                      strings.Join(keySet.KeysStr(), "\n"),
 			"originalPrimaryKey":        wrapWithRawString(table.PrimaryKey.Name.Source()),
 			"keyValues":                 strings.Join(keyVariableSet.KeysStr(), ", "),
@@ -54,7 +54,7 @@ func genDelete(table Table, withCache bool) (string, string, string, error) {
 		Parse(text).
 		Execute(map[string]interface{}{
 			"lowerStartCamelPrimaryKey": stringx.From(table.PrimaryKey.Name.ToCamel()).Untitle(),
-			"dataType":                  table.PrimaryKey.DataType,
+			"dataType":                  strings.ReplaceAll(table.PrimaryKey.DataType, "*", ""),
 		})
 	if err != nil {
 		return "", "", "", err

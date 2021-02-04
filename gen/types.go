@@ -8,7 +8,7 @@ import (
 
 func genTypes(table Table, methods string, withCache bool) (string, error) {
 	fields := table.Fields
-	fieldsString, err := genFields(fields)
+	fieldsString, selectiveString, err := genFields(fields)
 	if err != nil {
 		return "", err
 	}
@@ -26,6 +26,7 @@ func genTypes(table Table, methods string, withCache bool) (string, error) {
 			"lowerStartCamelObject": stringx.From(table.Name.ToCamel()).Untitle(),
 			"upperStartCamelObject": table.Name.ToCamel(),
 			"fields":                fieldsString,
+			"selectiveFields":       selectiveString,
 		})
 	if err != nil {
 		return "", err

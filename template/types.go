@@ -18,5 +18,9 @@ type (
 	{{.upperStartCamelObject}} struct {
 		{{.fields}}
 	}
+
+    {{.upperStartCamelObject}}Selective struct {
+		{{.selectiveFields}}
+	}
 )
 `

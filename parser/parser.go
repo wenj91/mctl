@@ -155,7 +155,7 @@ func Parse(ddl string) (*Table, error) {
 
 func (t *Table) ContainsTime() bool {
 	for _, item := range t.Fields {
-		if item.DataType == timeImport {
+		if strings.ReplaceAll(item.DataType, "*", "") == timeImport {
 			return true
 		}
 	}
