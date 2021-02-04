@@ -39,6 +39,7 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 
 	import (
 		"encoding/json"
+		"time"
 
 		"github.com/wenj91/gobatis"
 	)
@@ -52,12 +53,12 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 			WithConn(conn gobatis.GoBatis) TestUserInfoModel
 			Insert(data *TestUserInfo) (id int64, affected int64, err error)
 			InsertSelective(data *TestUserInfo) (id int64, affected int64, err error)
-			FindOne(id gobatis.NullInt64) (*TestUserInfo, error)
-			FindOneByNanosecond(nanosecond gobatis.NullInt64) (*TestUserInfo, error)
-			FindSelective(data *TestUserInfo) (*TestUserInfoFindResult, error)
+			FindOne(id int64) (*TestUserInfo, error)
+			FindOneByNanosecond(nanosecond int64) (*TestUserInfo, error)
+			FindSelective(data *TestUserInfoSelective) (*TestUserInfoFindResult, error)
 			Update(data *TestUserInfo) (affected int64, err error)
 			UpdateSelective(data *TestUserInfo) (affected int64, err error)
-			Delete(id gobatis.NullInt64) (affected int64, err error)
+			Delete(id int64) (affected int64, err error)
 		}
 
 		defaultTestUserInfoModel struct {
@@ -66,16 +67,25 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 		}
 
 		TestUserInfo struct {
-			Id              gobatis.NullInt64  `field:"id" json:"id"`
-			Nanosecond      gobatis.NullInt64  `field:"nanosecond" json:"nanosecond"`
-			Data            gobatis.NullString `field:"data" json:"data"`
-			Content         gobatis.NullString `field:"content" json:"content"`
-			StartCreateTime gobatis.NullTime   `json:"startCreateTime"`
-			EndCreateTime   gobatis.NullTime   `json:"endCreateTime"`
-			CreateTime      gobatis.NullTime   `field:"create_time" json:"createTime"`
-			StartUpdateTime gobatis.NullTime   `json:"startUpdateTime"`
-			EndUpdateTime   gobatis.NullTime   `json:"endUpdateTime"`
-			UpdateTime      gobatis.NullTime   `field:"update_time" json:"updateTime"`
+			Id         *int64     `field:"id" json:"id"`
+			Nanosecond *int64     `field:"nanosecond" json:"nanosecond"`
+			Data       *string    `field:"data" json:"data"`
+			Content    *string    `field:"content" json:"content"`
+			CreateTime *time.Time `field:"create_time" json:"createTime"`
+			UpdateTime *time.Time `field:"update_time" json:"updateTime"`
+		}
+
+		TestUserInfoSelective struct {
+			Id              *int64
+			Nanosecond      *int64
+			Data            *string
+			Content         *string
+			StartCreateTime *time.Time
+			EndCreateTime   *time.Time
+			CreateTime      *time.Time
+			StartUpdateTime *time.Time
+			EndUpdateTime   *time.Time
+			UpdateTime      *time.Time
 		}
 	)
 
@@ -136,7 +146,7 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 		return
 	}
 
-	func (m *defaultTestUserInfoModel) FindOne(id gobatis.NullInt64) (*TestUserInfo, error) {
+	func (m *defaultTestUserInfoModel) FindOne(id int64) (*TestUserInfo, error) {
 		var resp *TestUserInfo
 		err := m.conn.Select(m.method("findOne"), map[string]interface{}{
 			"Id": id,
@@ -144,7 +154,7 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 		return resp, err
 	}
 
-	func (m *defaultTestUserInfoModel) FindOneByNanosecond(nanosecond gobatis.NullInt64) (*TestUserInfo, error) {
+	func (m *defaultTestUserInfoModel) FindOneByNanosecond(nanosecond int64) (*TestUserInfo, error) {
 		var resp *TestUserInfo
 		err := m.conn.Select(m.method("findOneByNanosecond"), map[string]interface{}{
 			"Nanosecond": nanosecond,
@@ -152,7 +162,7 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 		return resp, err
 	}
 
-	func (m *defaultTestUserInfoModel) FindSelective(data *TestUserInfo) (*TestUserInfoFindResult, error) {
+	func (m *defaultTestUserInfoModel) FindSelective(data *TestUserInfoSelective) (*TestUserInfoFindResult, error) {
 		resp := make([]*TestUserInfo, 0)
 		err := m.conn.Select(m.method("findSelective"), data)(&resp)
 		return &TestUserInfoFindResult{
@@ -170,7 +180,7 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 		return
 	}
 
-	func (m *defaultTestUserInfoModel) Delete(id gobatis.NullInt64) (affected int64, err error) {
+	func (m *defaultTestUserInfoModel) Delete(id int64) (affected int64, err error) {
 		affected, err = m.conn.Delete(m.method("delete"), map[string]interface{}{
 			"Id": id,
 		})
@@ -197,44 +207,44 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 		<insert id="saveSelective">
 			insert into test_user_info
 			<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="Id != nil">
-				id,  
-			</if>
-			<if test="Nanosecond != nil">
-				nanosecond,  
-			</if>
-			<if test="Data != nil">
-				data,  
-			</if>
-			<if test="Content != nil">
-				content,  
-			</if>
-			<if test="CreateTime != nil">
-				create_time,  
-			</if>
-			<if test="UpdateTime != nil">
-				update_time,  
-			</if>
+				<if test="Id != nil">
+					id,  
+				</if>
+				<if test="Nanosecond != nil">
+					nanosecond,  
+				</if>
+				<if test="Data != nil">
+					data,  
+				</if>
+				<if test="Content != nil">
+					content,  
+				</if>
+				<if test="CreateTime != nil">
+					create_time,  
+				</if>
+				<if test="UpdateTime != nil">
+					update_time,  
+				</if>
 			</trim>
 			<trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="Id != nil">
-				#{Id},
-			</if>
-			<if test="Nanosecond != nil">
-				#{Nanosecond},
-			</if>
-			<if test="Data != nil">
-				#{Data},
-			</if>
-			<if test="Content != nil">
-				#{Content},
-			</if>
-			<if test="CreateTime != nil">
-				#{CreateTime},
-			</if>
-			<if test="UpdateTime != nil">
-				#{UpdateTime},
-			</if>
+				<if test="Id != nil">
+					#{Id},
+				</if>
+				<if test="Nanosecond != nil">
+					#{Nanosecond},
+				</if>
+				<if test="Data != nil">
+					#{Data},
+				</if>
+				<if test="Content != nil">
+					#{Content},
+				</if>
+				<if test="CreateTime != nil">
+					#{CreateTime},
+				</if>
+				<if test="UpdateTime != nil">
+					#{UpdateTime},
+				</if>
 			</trim>
 		</insert>
 		<update id="update">
@@ -247,15 +257,15 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 		<update id="updateSelective">
 			update test_user_info
 			<set>
-			<if test="Nanosecond != nil">
-				nanosecond = #{Nanosecond},
-			</if>
-			<if test="Data != nil">
-				data = #{Data},
-			</if>
-			<if test="Content != nil">
-				content = #{Content},
-			</if>
+				<if test="Nanosecond != nil">
+					nanosecond = #{Nanosecond},
+				</if>
+				<if test="Data != nil">
+					data = #{Data},
+				</if>
+				<if test="Content != nil">
+					content = #{Content},
+				</if>
 			</set>
 			where id = #{Id}
 		</update>
@@ -265,50 +275,50 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 		</delete>
 		<select id="findOne" resultType="struct">
 			select 
-			<include refid="Base_Column_List" />
+				<include refid="Base_Column_List" />
 			from test_user_info
 			where id = #{Id}
 			limit 1
 		</select>
 		<select id="findOneByNanosecond" resultType="struct">
 			select 
-			<include refid="Base_Column_List" />
+				<include refid="Base_Column_List" />
 			from test_user_info
 			where nanosecond = #{Nanosecond}
 			limit 1
 		</select>
 		<select id="findSelective" resultType="structs">
 			select 
-			<include refid="Base_Column_List" />
+				<include refid="Base_Column_List" />
 			from test_user_info
 			<where>
-			<if test="Nanosecond != nil">
-				and nanosecond = #{Nanosecond}
-			</if>
-			<if test="Data != nil">
-				and data = #{Data}
-			</if>
-			<if test="Content != nil">
-				and content = #{Content}
-			</if>
-			<if test="StartCreateTime != nil">
-				and create_time >= #{StartCreateTime}
-			</if>
-			<if test="EndCreateTime != nil">
-				and create_time <![CDATA[<=]]> #{EndCreateTime}
-			</if>
-			<if test="CreateTime != nil">
-				and create_time = #{CreateTime}
-			</if>
-			<if test="StartUpdateTime != nil">
-				and update_time >= #{StartUpdateTime}
-			</if>
-			<if test="EndUpdateTime != nil">
-				and update_time <![CDATA[<=]]> #{EndUpdateTime}
-			</if>
-			<if test="UpdateTime != nil">
-				and update_time = #{UpdateTime}
-			</if>
+				<if test="Nanosecond != nil">
+					and nanosecond = #{Nanosecond}
+				</if>
+				<if test="Data != nil">
+					and data = #{Data}
+				</if>
+				<if test="Content != nil">
+					and content = #{Content}
+				</if>
+				<if test="StartCreateTime != nil">
+					and create_time >= #{StartCreateTime}
+				</if>
+				<if test="EndCreateTime != nil">
+					and create_time <![CDATA[<=]]> #{EndCreateTime}
+				</if>
+				<if test="CreateTime != nil">
+					and create_time = #{CreateTime}
+				</if>
+				<if test="StartUpdateTime != nil">
+					and update_time >= #{StartUpdateTime}
+				</if>
+				<if test="EndUpdateTime != nil">
+					and update_time <![CDATA[<=]]> #{EndUpdateTime}
+				</if>
+				<if test="UpdateTime != nil">
+					and update_time = #{UpdateTime}
+				</if>
 			</where>
 		</select>
 	</mapper>
@@ -425,30 +435,30 @@ OPTIONS:
 # 类型转换规则
 | mysql dataType | golang dataType | golang dataType(if null&&default null) |
 |----------------|-----------------|----------------------------------------|
-| bool           | int64           | gobatis.NullInt64                          |
-| boolean        | int64           | gobatis.NullInt64                          |
-| tinyint        | int64           | gobatis.NullInt64                          |
-| smallint       | int64           | gobatis.NullInt64                          |
-| mediumint      | int64           | gobatis.NullInt64                          |
-| int            | int64           | gobatis.NullInt64                          |
-| integer        | int64           | gobatis.NullInt64                          |
-| bigint         | int64           | gobatis.NullInt64                          |
-| float          | float64         | gobatis.NullFloat64                        |
-| double         | float64         | gobatis.NullFloat64                        |
-| decimal        | float64         | gobatis.NullFloat64                        |
-| date           | time.Time       | gobatis.NullTime                           |
-| datetime       | time.Time       | gobatis.NullTime                           |
-| timestamp      | time.Time       | gobatis.NullTime                           |
-| time           | string          | gobatis.NullString                         |
-| year           | time.Time       | gobatis.NullInt64                          |
-| char           | string          | gobatis.NullString                         |
-| varchar        | string          | gobatis.NullString                         |
-| binary         | string          | gobatis.NullString                         |
-| varbinary      | string          | gobatis.NullString                         |
-| tinytext       | string          | gobatis.NullString                         |
-| text           | string          | gobatis.NullString                         |
-| mediumtext     | string          | gobatis.NullString                         |
-| longtext       | string          | gobatis.NullString                         |
-| enum           | string          | gobatis.NullString                         |
-| set            | string          | gobatis.NullString                         |
-| json           | string          | gobatis.NullString                         |
+| bool           | int64           | *int64                                 |
+| boolean        | int64           | *int64                                 |
+| tinyint        | int64           | *int64                                 |
+| smallint       | int64           | *int64                                 |
+| mediumint      | int64           | *int64                                 |
+| int            | int64           | *int64                                 |
+| integer        | int64           | *int64                                 |
+| bigint         | int64           | *int64                                 |
+| float          | float64         | *float64                               |
+| double         | float64         | *float64                               |
+| decimal        | float64         | *float64                               |
+| date           | time.Time       | *time.Time                             |
+| datetime       | time.Time       | *time.Time                             |
+| timestamp      | time.Time       | *time.Time                             |
+| time           | string          | *string                                |
+| year           | time.Time       | *int64                                 |
+| char           | string          | *string                                |
+| varchar        | string          | *string                                |
+| binary         | string          | *string                                |
+| varbinary      | string          | *string                                |
+| tinytext       | string          | *string                                |
+| text           | string          | *string                                |
+| mediumtext     | string          | *string                                |
+| longtext       | string          | *string                                |
+| enum           | string          | *string                                |
+| set            | string          | *string                                |
+| json           | string          | *string                                |
