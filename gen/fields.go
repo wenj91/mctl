@@ -19,6 +19,11 @@ func genFields(table Table) (string, error) {
 	for _, field := range table.Fields {
 		camelFieldName := field.Name.ToCamel()
 		lowerStartCamelFieldName := stringx.From(camelFieldName).Untitle()
+
+		if field.IsPrimaryKey {
+			lowerStartCamelFieldName = "id"
+		}
+
 		dataType, err := converter.ConvertDataTypeToEntType(field.DataBaseType, lowerStartCamelFieldName, field.Name.Source())
 		if err != nil {
 			return "", err

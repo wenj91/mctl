@@ -86,6 +86,15 @@ func ConvertDataTypeToEntType(dataBaseType string, name string, colName string, 
 		if len(enumOrJson) > 0 {
 			ej = enumOrJson[0]
 		}
+
+		if ej == "" && dataBaseType == "enum" {
+			ej = "\"\""
+		}
+
+		if ej == "" && dataBaseType == "json" {
+			ej = "[]byte{}"
+		}
+
 		return fmt.Sprintf(tp, name, ej, colName), nil
 	}
 
