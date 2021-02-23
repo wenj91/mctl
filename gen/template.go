@@ -16,6 +16,7 @@ const (
 	edgesTemplateFile  = "edges.tpl"
 	fieldsTemplateFile = "fields.tpl"
 	structTemplateFile = "struct.tpl"
+	tableTemplateFile  = "table.tpl"
 
 	errTemplateFile = "err.tpl"
 )
@@ -26,6 +27,7 @@ var templates = map[string]string{
 	edgesTemplateFile:   template.Edges,
 	fieldsTemplateFile:  template.Fields,
 	structTemplateFile:  template.Struct,
+	tableTemplateFile:   template.Table,
 	errTemplateFile:     template.Error,
 }
 

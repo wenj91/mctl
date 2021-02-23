@@ -183,6 +183,11 @@ func (g *defaultGenerator) genModel(in parser.Table) (string, error) {
 		return "", err
 	}
 
+	tableCode, err := genTable(table)
+	if err != nil {
+		return "", err
+	}
+
 	edgesCode, err := genEdges(table)
 	if err != nil {
 		return "", err
@@ -196,6 +201,7 @@ func (g *defaultGenerator) genModel(in parser.Table) (string, error) {
 	output, err := util.With("schema").Parse(text1).Execute(map[string]interface{}{
 		"imports": importsCode,
 		"fields":  fieldsCode,
+		"table":   tableCode,
 		"struct":  structCode,
 		"edges":   edgesCode,
 	})

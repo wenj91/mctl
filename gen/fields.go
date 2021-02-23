@@ -2,6 +2,7 @@ package gen
 
 import (
 	"github.com/tal-tech/go-zero/tools/goctl/util"
+	"github.com/tal-tech/go-zero/tools/goctl/util/stringx"
 	"github.com/wenj91/mctl/converter"
 	"github.com/wenj91/mctl/template"
 	"strings"
@@ -15,8 +16,10 @@ func genFields(table Table) (string, error) {
 
 	fields := make([]string, 0)
 
-	for _, item := range table.Fields {
-		dataType, err := converter.ConvertDataTypeToEntType(item.DataBaseType, item.Name.Source())
+	for _, field := range table.Fields {
+		camelFieldName := field.Name.ToCamel()
+		lowerStartCamelFieldName := stringx.From(camelFieldName).Untitle()
+		dataType, err := converter.ConvertDataTypeToEntType(field.DataBaseType, lowerStartCamelFieldName, field.Name.Source())
 		if err != nil {
 			return "", err
 		}

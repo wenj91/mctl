@@ -43,49 +43,53 @@ var (
 	entMysqlDataTypeMap = map[string]string{
 		// For consistency, all integer types are converted to int64
 		// number
-		"bool":      "field.Bool(\"%s\")",
-		"boolean":   "field.Bool(\"%s\")",
-		"tinyint":   "field.Int(\"%s\")",
-		"smallint":  "field.Int(\"%s\")",
-		"mediumint": "field.Int(\"%s\")",
-		"int":       "field.Int(\"%s\")",
-		"integer":   "field.Int(\"%s\")",
-		"bigint":    "field.Int(\"%s\")",
-		"float":     "field.Float(\"%s\")",
-		"double":    "field.Float(\"%s\")",
-		"decimal":   "field.Float(\"%s\")",
+		"bool":      "field.Bool(\"%s\").StorageKey(\"%s\")",
+		"boolean":   "field.Bool(\"%s\").StorageKey(\"%s\")",
+		"tinyint":   "field.Int(\"%s\").StorageKey(\"%s\")",
+		"smallint":  "field.Int(\"%s\").StorageKey(\"%s\")",
+		"mediumint": "field.Int(\"%s\").StorageKey(\"%s\")",
+		"int":       "field.Int(\"%s\").StorageKey(\"%s\")",
+		"integer":   "field.Int(\"%s\").StorageKey(\"%s\")",
+		"bigint":    "field.Int(\"%s\").StorageKey(\"%s\")",
+		"float":     "field.Float(\"%s\").StorageKey(\"%s\")",
+		"double":    "field.Float(\"%s\").StorageKey(\"%s\")",
+		"decimal":   "field.Float(\"%s\").StorageKey(\"%s\")",
 		// date&time
-		"date":      "field.Time(\"%s\")",
-		"datetime":  "field.Time(\"%s\")",
-		"timestamp": "field.Time(\"%s\")",
-		"time":      "field.String(\"%s\")",
-		"year":      "field.Int(\"%s\")",
+		"date":      "field.Time(\"%s\").StorageKey(\"%s\")",
+		"datetime":  "field.Time(\"%s\").StorageKey(\"%s\")",
+		"timestamp": "field.Time(\"%s\").StorageKey(\"%s\")",
+		"time":      "field.String(\"%s\").StorageKey(\"%s\")",
+		"year":      "field.Int(\"%s\").StorageKey(\"%s\")",
 		// string
-		"char":       "field.String(\"%s\")",
-		"varchar":    "field.String(\"%s\")",
-		"binary":     "field.String(\"%s\")",
-		"varbinary":  "field.String(\"%s\")",
-		"tinytext":   "field.String(\"%s\")",
-		"text":       "field.String(\"%s\")",
-		"mediumtext": "field.String(\"%s\")",
-		"longtext":   "field.String(\"%s\")",
-		"enum":       "field.Enum(\"%s\").Values(%s)",
-		"set":        "field.String(\"%s\")",
-		"json":       "field.JSON(\"%s\", %s)",
+		"char":       "field.String(\"%s\").StorageKey(\"%s\")",
+		"varchar":    "field.String(\"%s\").StorageKey(\"%s\")",
+		"binary":     "field.String(\"%s\").StorageKey(\"%s\")",
+		"varbinary":  "field.String(\"%s\").StorageKey(\"%s\")",
+		"tinytext":   "field.String(\"%s\").StorageKey(\"%s\")",
+		"text":       "field.String(\"%s\").StorageKey(\"%s\")",
+		"mediumtext": "field.String(\"%s\").StorageKey(\"%s\")",
+		"longtext":   "field.String(\"%s\").StorageKey(\"%s\")",
+		"enum":       "field.Enum(\"%s\").Values(%s).StorageKey(\"%s\")",
+		"set":        "field.String(\"%s\").StorageKey(\"%s\")",
+		"json":       "field.JSON(\"%s\", %s).StorageKey(\"%s\")",
 	}
 )
 
-func ConvertDataTypeToEntType(dataBaseType string, name string, enumOrJson ...interface{}) (string, error) {
+func ConvertDataTypeToEntType(dataBaseType string, name string, colName string, enumOrJson ...string) (string, error) {
 	tp, ok := entMysqlDataTypeMap[strings.ToLower(dataBaseType)]
 	if !ok {
 		return "", fmt.Errorf("unexpected database type: %s", dataBaseType)
 	}
 
 	if dataBaseType == "enum" || dataBaseType == "json" {
-		return fmt.Sprintf(tp, name, enumOrJson), nil
+		ej := ""
+		if len(enumOrJson) > 0 {
+			ej = enumOrJson[0]
+		}
+		return fmt.Sprintf(tp, name, ej, colName), nil
 	}
 
-	return fmt.Sprintf(tp, name), nil
+	return fmt.Sprintf(tp, name, colName), nil
 }
 
 func ConvertDataType(dataBaseType string, isDefaultNull bool) (string, error) {
