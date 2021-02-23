@@ -17,12 +17,12 @@ var cfg = &config.Config{
 }
 
 func TestFromDDl(t *testing.T) {
-	err := fromDDl("./user.sql", t.TempDir(), cfg, true, false)
+	err := fromDDl("./user.sql", t.TempDir(), cfg, false)
 	assert.Equal(t, errNotMatched, err)
 
 	// case dir is not exists
 	unknownDir := filepath.Join(t.TempDir(), "test", "user.sql")
-	err = fromDDl(unknownDir, t.TempDir(), cfg, true, false)
+	err = fromDDl(unknownDir, t.TempDir(), cfg, false)
 	assert.True(t, func() bool {
 		switch err.(type) {
 		case *os.PathError:
@@ -33,7 +33,7 @@ func TestFromDDl(t *testing.T) {
 	}())
 
 	// case empty src
-	err = fromDDl("", t.TempDir(), cfg, true, false)
+	err = fromDDl("", t.TempDir(), cfg, false)
 	if err != nil {
 		assert.Equal(t, "expected path or path globbing patterns, but nothing found", err.Error())
 	}
@@ -63,7 +63,7 @@ func TestFromDDl(t *testing.T) {
 	_, err = os.Stat(user2Sql)
 	assert.Nil(t, err)
 
-	err = fromDDl(filepath.Join(tempDir, "user*.sql"), tempDir, cfg, true, false)
+	err = fromDDl(filepath.Join(tempDir, "user*.sql"), tempDir, cfg, false)
 	assert.Nil(t, err)
 
 	_, err = os.Stat(filepath.Join(tempDir, "usermodel.go"))

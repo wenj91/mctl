@@ -22,7 +22,6 @@ var errNotMatched = errors.New("sql not matched")
 const (
 	flagSrc   = "src"
 	flagDir   = "dir"
-	flagCache = "cache"
 	flagIdea  = "idea"
 	flagUrl   = "url"
 	flagTable = "table"
@@ -32,20 +31,18 @@ const (
 func MysqlDDL(ctx *cli.Context) error {
 	src := ctx.String(flagSrc)
 	dir := ctx.String(flagDir)
-	cache := false
 	idea := ctx.Bool(flagIdea)
 	style := ctx.String(flagStyle)
 	cfg, err := config.NewConfig(style)
 	if err != nil {
 		return err
 	}
-	return fromDDl(src, dir, cfg, cache, idea)
+	return fromDDl(src, dir, cfg, idea)
 }
 
 func MyDataSource(ctx *cli.Context) error {
 	url := strings.TrimSpace(ctx.String(flagUrl))
 	dir := strings.TrimSpace(ctx.String(flagDir))
-	cache := false
 	idea := ctx.Bool(flagIdea)
 	style := ctx.String(flagStyle)
 	pattern := strings.TrimSpace(ctx.String(flagTable))
@@ -54,10 +51,10 @@ func MyDataSource(ctx *cli.Context) error {
 		return err
 	}
 
-	return fromDataSource(url, pattern, dir, cfg, cache, idea)
+	return fromDataSource(url, pattern, dir, cfg, idea)
 }
 
-func fromDDl(src, dir string, cfg *config.Config, cache, idea bool) error {
+func fromDDl(src, dir string, cfg *config.Config, idea bool) error {
 	log := console.NewConsole(idea)
 	src = strings.TrimSpace(src)
 	if len(src) == 0 {
@@ -87,11 +84,11 @@ func fromDDl(src, dir string, cfg *config.Config, cache, idea bool) error {
 		return err
 	}
 
-	err = generator.StartFromDDL(strings.Join(source, "\n"), cache)
+	err = generator.StartFromDDL(strings.Join(source, "\n"))
 	return err
 }
 
-func fromDataSource(url, pattern, dir string, cfg *config.Config, cache, idea bool) error {
+func fromDataSource(url, pattern, dir string, cfg *config.Config, idea bool) error {
 	log := console.NewConsole(idea)
 	if len(url) == 0 {
 		log.Error("%v", "expected data source of mysql, but nothing found")
@@ -144,6 +141,6 @@ func fromDataSource(url, pattern, dir string, cfg *config.Config, cache, idea bo
 		return err
 	}
 
-	err = generator.StartFromInformationSchema(dsn.DBName, matchTables, cache)
+	err = generator.StartFromInformationSchema(dsn.DBName, matchTables)
 	return err
 }

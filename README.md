@@ -1,6 +1,8 @@
 # Mctl Model
 
-mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要代码实现来源于`github.com/tal-tech/go-zero/tools/goctl/model`，目前仅支持识别mysql ddl进行model层代码生成，通过命令行或者idea插件（即将支持）。
+mctl model 为[ent](https://github.com/ent/ent)生成模板代码工具
+
+主要代码实现来源于`github.com/tal-tech/go-zero/tools/goctl/model`，目前仅支持识别mysql ddl进行model层代码生成，通过命令行或者idea插件（即将支持）。
 
 ## 快速开始
 
@@ -20,10 +22,7 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 
     ```Plain Text
     ./model
-	├── mappers
-	│   └── testuserinfomapper.xml
-	├── testuserinfomodel.go
-	└── vars.go
+	└──testuserinfomodel.go
     ```
 
 * 通过datasource生成
@@ -35,293 +34,33 @@ mctl model 为go-zero生成github.com/wenj91/gobatis模板代码工具，主要�
 * 生成代码示例
   
 	```go
-	package nocache
+    package schema
+    
+    import (
+        "entgo.io/ent"
+        "entgo.io/ent/schema/field"
+    )
+    
+    type Account struct {
+        ent.Schema
+    }
+    
+    func (Account) Fields() []ent.Field {
+        return []ent.Field{
+            field.Int("id"),
+            field.String("accountNumber"),
+            field.Int("userId"),
+            field.Float("available"),
+            field.Float("dailyLimit"),
+            field.String("currency"),
+            field.Time("createAt"),
+        }
+    }
+    
+    func (Account) Edges() []ent.Edge {
+        return nil
+    }
 
-	import (
-		"encoding/json"
-		"time"
-
-		"github.com/wenj91/gobatis"
-	)
-
-	type (
-		TestUserInfoFindResult struct {
-			testUserInfos []*TestUserInfo
-		}
-
-		TestUserInfoModel interface {
-			WithConn(conn gobatis.GoBatis) TestUserInfoModel
-			Insert(data *TestUserInfo) (id int64, affected int64, err error)
-			InsertSelective(data *TestUserInfo) (id int64, affected int64, err error)
-			FindOne(id int64) (*TestUserInfo, error)
-			FindOneByNanosecond(nanosecond int64) (*TestUserInfo, error)
-			FindSelective(data *TestUserInfoSelective) (*TestUserInfoFindResult, error)
-			Update(data *TestUserInfo) (affected int64, err error)
-			UpdateSelective(data *TestUserInfo) (affected int64, err error)
-			Delete(id int64) (affected int64, err error)
-		}
-
-		defaultTestUserInfoModel struct {
-			conn  gobatis.GoBatis
-			table string
-		}
-
-		TestUserInfo struct {
-			Id         *int64     `field:"id" json:"id"`
-			Nanosecond *int64     `field:"nanosecond" json:"nanosecond"`
-			Data       *string    `field:"data" json:"data"`
-			Content    *string    `field:"content" json:"content"`
-			CreateTime *time.Time `field:"create_time" json:"createTime"`
-			UpdateTime *time.Time `field:"update_time" json:"updateTime"`
-		}
-
-		TestUserInfoSelective struct {
-			Id              *int64
-			Nanosecond      *int64
-			Data            *string
-			Content         *string
-			StartCreateTime *time.Time
-			EndCreateTime   *time.Time
-			CreateTime      *time.Time
-			StartUpdateTime *time.Time
-			EndUpdateTime   *time.Time
-			UpdateTime      *time.Time
-		}
-	)
-
-	func (m *TestUserInfo) ToString() string {
-		str := ""
-
-		bs, err := json.Marshal(m)
-		if nil == err {
-			str = string(bs)
-		}
-
-		return str
-	}
-
-	func newTestUserInfoFindResult(testUserInfos []*TestUserInfo) *TestUserInfoFindResult {
-		return &TestUserInfoFindResult{
-			testUserInfos: testUserInfos,
-		}
-	}
-
-	func (r *TestUserInfoFindResult) List() []*TestUserInfo {
-		return r.testUserInfos
-	}
-
-	func (r *TestUserInfoFindResult) One() *TestUserInfo {
-		if len(r.testUserInfos) == 0 {
-			return nil
-		}
-
-		return r.testUserInfos[0]
-	}
-
-	func NewTestUserInfoModel(conn gobatis.GoBatis) TestUserInfoModel {
-		return &defaultTestUserInfoModel{
-			conn:  conn,
-			table: "`test_user_info`",
-		}
-	}
-
-	func (m *defaultTestUserInfoModel) method(mt string) string {
-		return "TestUserInfoMapper." + mt
-	}
-
-	func (m *defaultTestUserInfoModel) WithConn(conn gobatis.GoBatis) TestUserInfoModel {
-		return &defaultTestUserInfoModel{
-			conn:  conn,
-			table: "test_user_info",
-		}
-	}
-
-	func (m *defaultTestUserInfoModel) Insert(data *TestUserInfo) (id int64, affected int64, err error) {
-		id, affected, err = m.conn.Insert(m.method("save"), data)
-		return
-	}
-
-	func (m *defaultTestUserInfoModel) InsertSelective(data *TestUserInfo) (id int64, affected int64, err error) {
-		id, affected, err = m.conn.Insert(m.method("saveSelective"), data)
-		return
-	}
-
-	func (m *defaultTestUserInfoModel) FindOne(id int64) (*TestUserInfo, error) {
-		var resp *TestUserInfo
-		err := m.conn.Select(m.method("findOne"), map[string]interface{}{
-			"Id": id,
-		})(&resp)
-		return resp, err
-	}
-
-	func (m *defaultTestUserInfoModel) FindOneByNanosecond(nanosecond int64) (*TestUserInfo, error) {
-		var resp *TestUserInfo
-		err := m.conn.Select(m.method("findOneByNanosecond"), map[string]interface{}{
-			"Nanosecond": nanosecond,
-		})(&resp)
-		return resp, err
-	}
-
-	func (m *defaultTestUserInfoModel) FindSelective(data *TestUserInfoSelective) (*TestUserInfoFindResult, error) {
-		resp := make([]*TestUserInfo, 0)
-		err := m.conn.Select(m.method("findSelective"), data)(&resp)
-		return &TestUserInfoFindResult{
-			testUserInfos: resp,
-		}, err
-	}
-
-	func (m *defaultTestUserInfoModel) Update(data *TestUserInfo) (affected int64, err error) {
-		affected, err = m.conn.Update(m.method("update"), data)
-		return
-	}
-
-	func (m *defaultTestUserInfoModel) UpdateSelective(data *TestUserInfo) (affected int64, err error) {
-		affected, err = m.conn.Update(m.method("updateSelective"), data)
-		return
-	}
-
-	func (m *defaultTestUserInfoModel) Delete(id int64) (affected int64, err error) {
-		affected, err = m.conn.Delete(m.method("delete"), map[string]interface{}{
-			"Id": id,
-		})
-		return
-	}
-
-
-	```
-
-* 生成mapper代码示例
-
-	```xml
-	<?xml version="1.0" encoding="utf-8"?>
-	<!DOCTYPE mapper PUBLIC "gobatis"
-			"https://raw.githubusercontent.com/wenj91/gobatis/master/gobatis.dtd">
-	<mapper namespace="TestUserInfoMapper">
-		<sql id="Base_Column_List">
-			id,nanosecond,data,content,create_time,update_time
-		</sql>
-		<insert id="save">
-			insert into test_user_info (id, nanosecond, data, content, create_time, update_time)
-			values (#{id},#{nanosecond},#{data},#{content},#{create_time},#{update_time})
-		</insert>
-		<insert id="saveSelective">
-			insert into test_user_info
-			<trim prefix="(" suffix=")" suffixOverrides=",">
-				<if test="Id != nil">
-					id,  
-				</if>
-				<if test="Nanosecond != nil">
-					nanosecond,  
-				</if>
-				<if test="Data != nil">
-					data,  
-				</if>
-				<if test="Content != nil">
-					content,  
-				</if>
-				<if test="CreateTime != nil">
-					create_time,  
-				</if>
-				<if test="UpdateTime != nil">
-					update_time,  
-				</if>
-			</trim>
-			<trim prefix="values (" suffix=")" suffixOverrides=",">
-				<if test="Id != nil">
-					#{Id},
-				</if>
-				<if test="Nanosecond != nil">
-					#{Nanosecond},
-				</if>
-				<if test="Data != nil">
-					#{Data},
-				</if>
-				<if test="Content != nil">
-					#{Content},
-				</if>
-				<if test="CreateTime != nil">
-					#{CreateTime},
-				</if>
-				<if test="UpdateTime != nil">
-					#{UpdateTime},
-				</if>
-			</trim>
-		</insert>
-		<update id="update">
-			update test_user_info
-			set nanosecond = #{Nanosecond},
-			data = #{Data},
-			content = #{Content}
-			where id = #{Id}
-		</update>
-		<update id="updateSelective">
-			update test_user_info
-			<set>
-				<if test="Nanosecond != nil">
-					nanosecond = #{Nanosecond},
-				</if>
-				<if test="Data != nil">
-					data = #{Data},
-				</if>
-				<if test="Content != nil">
-					content = #{Content},
-				</if>
-			</set>
-			where id = #{Id}
-		</update>
-		<delete id="delete">
-			delete from test_user_info
-			where id = #{Id}
-		</delete>
-		<select id="findOne" resultType="struct">
-			select 
-				<include refid="Base_Column_List" />
-			from test_user_info
-			where id = #{Id}
-			limit 1
-		</select>
-		<select id="findOneByNanosecond" resultType="struct">
-			select 
-				<include refid="Base_Column_List" />
-			from test_user_info
-			where nanosecond = #{Nanosecond}
-			limit 1
-		</select>
-		<select id="findSelective" resultType="structs">
-			select 
-				<include refid="Base_Column_List" />
-			from test_user_info
-			<where>
-				<if test="Nanosecond != nil">
-					and nanosecond = #{Nanosecond}
-				</if>
-				<if test="Data != nil">
-					and data = #{Data}
-				</if>
-				<if test="Content != nil">
-					and content = #{Content}
-				</if>
-				<if test="StartCreateTime != nil">
-					and create_time >= #{StartCreateTime}
-				</if>
-				<if test="EndCreateTime != nil">
-					and create_time <![CDATA[<=]]> #{EndCreateTime}
-				</if>
-				<if test="CreateTime != nil">
-					and create_time = #{CreateTime}
-				</if>
-				<if test="StartUpdateTime != nil">
-					and update_time >= #{StartUpdateTime}
-				</if>
-				<if test="EndUpdateTime != nil">
-					and update_time <![CDATA[<=]]> #{EndUpdateTime}
-				</if>
-				<if test="UpdateTime != nil">
-					and update_time = #{UpdateTime}
-				</if>
-			</where>
-		</select>
-	</mapper>
 	```
 
 ## 用法

@@ -1,18 +1,7 @@
 package template
 
-var (
-	Imports = `import (
-	"encoding/json"
-	{{if .time}}"time"{{end}}
-
-	"github.com/wenj91/gobatis"
+var Imports = `import (
+	"entgo.io/ent"
+	"entgo.io/ent/schema/field"
 )
 `
-	ImportsNoCache = `import (
-	"encoding/json"
-	{{if .time}}"time"{{end}}
-
-	"github.com/wenj91/gobatis"
-)
-`
-)
