@@ -82,7 +82,7 @@ func fromDDl(src, dir string, cfg *config.Config, idea bool, pkg string) error {
 
 		source = append(source, string(data))
 	}
-	generator, err := gen.NewDefaultGenerator(dir, cfg, gen.WithConsoleOption(log))
+	generator, err := gen.NewDefaultGenerator(dir, pkg, cfg, gen.WithConsoleOption(log))
 	if err != nil {
 		return err
 	}
@@ -139,7 +139,7 @@ func fromDataSource(url, pattern, dir string, cfg *config.Config, idea bool, pkg
 		return errors.New("no tables matched")
 	}
 
-	generator, err := gen.NewDefaultGenerator(dir, cfg, gen.WithConsoleOption(log))
+	generator, err := gen.NewDefaultGenerator(dir, pkg, cfg, gen.WithConsoleOption(log))
 	if err != nil {
 		return err
 	}

@@ -50,7 +50,7 @@ var (
 		"mediumint": "Integer",
 		"int":       "Integer",
 		"integer":   "Integer",
-		"bigint":    "Integer",
+		"bigint":    "Long",
 		"float":     "Float",
 		"double":    "Double",
 		"decimal":   "BigDecimal",

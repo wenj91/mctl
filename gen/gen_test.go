@@ -14,7 +14,7 @@ var (
 	source = "CREATE TABLE `test_user_info` (\n  `id` bigint NOT NULL AUTO_INCREMENT,\n  `nanosecond` bigint NOT NULL DEFAULT '0',\n  `data` varchar(255) DEFAULT '',\n  `content` json DEFAULT NULL,\n  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,\n  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `nanosecond_unique` (`nanosecond`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
 )
 
-func TestCacheModel(t *testing.T) {
+func TestModel(t *testing.T) {
 	logx.Disable()
 	_ = Clean()
 	dir, _ := filepath.Abs("./testmodel")
@@ -23,8 +23,8 @@ func TestCacheModel(t *testing.T) {
 		_ = os.RemoveAll(dir)
 	}()
 
-	g, err := NewDefaultGenerator(noCacheDir, &config.Config{
-		NamingFormat: "gozero",
+	g, err := NewDefaultGenerator(noCacheDir, "com.github.wenj91.test", &config.Config{
+		NamingFormat: "goZero",
 	})
 	assert.Nil(t, err)
 

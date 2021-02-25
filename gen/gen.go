@@ -32,7 +32,7 @@ type (
 	Option func(generator *defaultGenerator)
 )
 
-func NewDefaultGenerator(dir string, cfg *config.Config, opt ...Option) (*defaultGenerator, error) {
+func NewDefaultGenerator(dir, pkg string, cfg *config.Config, opt ...Option) (*defaultGenerator, error) {
 	if dir == "" {
 		dir = pwd
 	}
@@ -42,7 +42,6 @@ func NewDefaultGenerator(dir string, cfg *config.Config, opt ...Option) (*defaul
 	}
 
 	dir = dirAbs
-	pkg := filepath.Base(dirAbs)
 	err = util.MkdirIfNotExist(dir)
 	if err != nil {
 		return nil, err
@@ -190,7 +189,7 @@ func (g *defaultGenerator) genModel(in parser.Table) (string, error) {
 
 	camelTableName := table.Name.ToCamel()
 	output, err := util.With("query").Parse(text1).Execute(map[string]interface{}{
-		"pkg":                   "com.github.wenj91.demo.pojo.entity",
+		"pkg":                   g.pkg,
 		"imports":               importsCode,
 		"upperStartCamelObject": camelTableName,
 		"table":                 tableCode,
