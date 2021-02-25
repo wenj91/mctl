@@ -12,23 +12,18 @@ const (
 	category            = "schema"
 	importsTemplateFile = "import.tpl"
 
-	schemaTemplateFile = "schema.tpl"
-	edgesTemplateFile  = "edges.tpl"
-	fieldsTemplateFile = "fields.tpl"
-	structTemplateFile = "struct.tpl"
-	tableTemplateFile  = "table.tpl"
-
-	errTemplateFile = "err.tpl"
+	tableTemplateFile       = "table.tpl"
+	queryTemplateFile       = "query.tpl"
+	queryMethodTemplateFile = "queryMethod.tpl"
+	fieldMethodTemplateFile = "fieldMethod.tpl"
 )
 
 var templates = map[string]string{
-	importsTemplateFile: template.Imports,
-	schemaTemplateFile:  template.Schema,
-	edgesTemplateFile:   template.Edges,
-	fieldsTemplateFile:  template.Fields,
-	structTemplateFile:  template.Struct,
-	tableTemplateFile:   template.Table,
-	errTemplateFile:     template.Error,
+	importsTemplateFile:     template.Imports,
+	tableTemplateFile:       template.Table,
+	queryTemplateFile:       template.Query,
+	queryMethodTemplateFile: template.QueryMethod,
+	fieldMethodTemplateFile: template.FieldMethod,
 }
 
 func Category() string {

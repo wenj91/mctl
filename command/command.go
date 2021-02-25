@@ -26,6 +26,7 @@ const (
 	flagUrl   = "url"
 	flagTable = "table"
 	flagStyle = "style"
+	flagPkg   = "pkg"
 )
 
 func MysqlDDL(ctx *cli.Context) error {
@@ -33,11 +34,12 @@ func MysqlDDL(ctx *cli.Context) error {
 	dir := ctx.String(flagDir)
 	idea := ctx.Bool(flagIdea)
 	style := ctx.String(flagStyle)
+	pkg := ctx.String(flagPkg)
 	cfg, err := config.NewConfig(style)
 	if err != nil {
 		return err
 	}
-	return fromDDl(src, dir, cfg, idea)
+	return fromDDl(src, dir, cfg, idea, pkg)
 }
 
 func MyDataSource(ctx *cli.Context) error {
@@ -45,16 +47,17 @@ func MyDataSource(ctx *cli.Context) error {
 	dir := strings.TrimSpace(ctx.String(flagDir))
 	idea := ctx.Bool(flagIdea)
 	style := ctx.String(flagStyle)
+	pkg := ctx.String(flagPkg)
 	pattern := strings.TrimSpace(ctx.String(flagTable))
 	cfg, err := config.NewConfig(style)
 	if err != nil {
 		return err
 	}
 
-	return fromDataSource(url, pattern, dir, cfg, idea)
+	return fromDataSource(url, pattern, dir, cfg, idea, pkg)
 }
 
-func fromDDl(src, dir string, cfg *config.Config, idea bool) error {
+func fromDDl(src, dir string, cfg *config.Config, idea bool, pkg string) error {
 	log := console.NewConsole(idea)
 	src = strings.TrimSpace(src)
 	if len(src) == 0 {
@@ -88,7 +91,7 @@ func fromDDl(src, dir string, cfg *config.Config, idea bool) error {
 	return err
 }
 
-func fromDataSource(url, pattern, dir string, cfg *config.Config, idea bool) error {
+func fromDataSource(url, pattern, dir string, cfg *config.Config, idea bool, pkg string) error {
 	log := console.NewConsole(idea)
 	if len(url) == 0 {
 		log.Error("%v", "expected data source of mysql, but nothing found")

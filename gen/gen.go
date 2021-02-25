@@ -10,7 +10,6 @@ import (
 	"github.com/tal-tech/go-zero/tools/goctl/config"
 	"github.com/tal-tech/go-zero/tools/goctl/util"
 	"github.com/tal-tech/go-zero/tools/goctl/util/console"
-	"github.com/tal-tech/go-zero/tools/goctl/util/format"
 	"github.com/tal-tech/go-zero/tools/goctl/util/stringx"
 	"github.com/wenj91/mctl/model"
 	"github.com/wenj91/mctl/parser"
@@ -113,12 +112,9 @@ func (g *defaultGenerator) createFile(modelList map[string]string) error {
 
 	for tableName, code := range modelList {
 		tn := stringx.From(tableName)
-		modelFilename, err := format.FileNamingFormat(g.cfg.NamingFormat, fmt.Sprintf("%s", tn.Source()))
-		if err != nil {
-			return err
-		}
+		modelFilename := tn.ToCamel() + "Query"
 
-		name := modelFilename + ".go"
+		name := modelFilename + ".java"
 		filename := filepath.Join(dirAbs, name)
 		if util.FileExists(filename) {
 			g.Warning("%s already exists, ignored.", name)
@@ -155,7 +151,6 @@ func (g *defaultGenerator) genFromDDL(source string) (map[string]string, error) 
 type (
 	Table struct {
 		parser.Table
-		CacheKey          map[string]Key
 		ContainsUniqueKey bool
 	}
 )
@@ -165,7 +160,7 @@ func (g *defaultGenerator) genModel(in parser.Table) (string, error) {
 		return "", fmt.Errorf("table %s: missing primary key", in.Name.Source())
 	}
 
-	importsCode, err := genImports(in.ContainsTime())
+	importsCode, err := genImports(in.ContainsDecimal())
 	if err != nil {
 		return "", err
 	}
@@ -173,12 +168,7 @@ func (g *defaultGenerator) genModel(in parser.Table) (string, error) {
 	var table Table
 	table.Table = in
 
-	fieldsCode, err := genFields(table)
-	if err != nil {
-		return "", err
-	}
-
-	structCode, err := genStruct(table)
+	fieldMethodCode, err := genFieldMethod(table)
 	if err != nil {
 		return "", err
 	}
@@ -188,22 +178,24 @@ func (g *defaultGenerator) genModel(in parser.Table) (string, error) {
 		return "", err
 	}
 
-	edgesCode, err := genEdges(table)
+	queryMethodCode, err := genQueryMethod(table)
 	if err != nil {
 		return "", err
 	}
 
-	text1, err := util.LoadTemplate(category, schemaTemplateFile, template.Schema)
+	text1, err := util.LoadTemplate(category, queryTemplateFile, template.Query)
 	if err != nil {
 		return "", err
 	}
 
-	output, err := util.With("schema").Parse(text1).Execute(map[string]interface{}{
-		"imports": importsCode,
-		"fields":  fieldsCode,
-		"table":   tableCode,
-		"struct":  structCode,
-		"edges":   edgesCode,
+	camelTableName := table.Name.ToCamel()
+	output, err := util.With("query").Parse(text1).Execute(map[string]interface{}{
+		"pkg":                   "com.github.wenj91.demo.pojo.entity",
+		"imports":               importsCode,
+		"upperStartCamelObject": camelTableName,
+		"table":                 tableCode,
+		"queryMethod":           queryMethodCode,
+		"fieldMethods":          fieldMethodCode,
 	})
 	if err != nil {
 		return "", err

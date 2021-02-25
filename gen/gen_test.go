@@ -1,12 +1,13 @@
 package gen
 
 import (
-	"github.com/stretchr/testify/assert"
-	"github.com/tal-tech/go-zero/core/logx"
-	"github.com/tal-tech/go-zero/tools/goctl/config"
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/tal-tech/go-zero/core/logx"
+	"github.com/tal-tech/go-zero/tools/goctl/config"
 )
 
 var (
@@ -30,7 +31,7 @@ func TestCacheModel(t *testing.T) {
 	err = g.StartFromDDL(source)
 	assert.Nil(t, err)
 	assert.True(t, func() bool {
-		_, err := os.Stat(filepath.Join(noCacheDir, "testuserinfomodel.go"))
+		_, err := os.Stat(filepath.Join(noCacheDir, "TestUserInfoQuery.java"))
 		return err == nil
 	}())
 }

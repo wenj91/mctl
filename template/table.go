@@ -1,8 +1,7 @@
 package template
 
-var Table = `func ({{.upperStartCamelObject}}) Annotations() []schema.Annotation {
-	return []schema.Annotation{
-		entsql.Annotation{Table: "{{.table}}"},
-	}
-}
+var Table = `    @Override
+    public String table() {
+        return "{{.table}}";
+    }
 `

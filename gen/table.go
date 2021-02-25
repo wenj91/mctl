@@ -11,10 +11,8 @@ func genTable(table Table) (string, error) {
 		return "", err
 	}
 
-	camelTableName := table.Name.ToCamel()
 	buffer, err := util.With("table").Parse(text).Execute(map[string]interface{}{
-		"upperStartCamelObject": camelTableName,
-		"table":                 table.Name.Source(),
+		"table": table.Name.Source(),
 	})
 	if err != nil {
 		return "", err

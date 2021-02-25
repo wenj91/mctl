@@ -5,14 +5,14 @@ import (
 	"github.com/wenj91/mctl/template"
 )
 
-func genImports(timeImport bool) (string, error) {
+func genImports(bigDecimalImport bool) (string, error) {
 	text, err := util.LoadTemplate(category, importsTemplateFile, template.Imports)
 	if err != nil {
 		return "", err
 	}
 
 	buffer, err := util.With("import").Parse(text).Execute(map[string]interface{}{
-		"time": timeImport,
+		"bigdecimal": bigDecimalImport,
 	})
 	if err != nil {
 		return "", err

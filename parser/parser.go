@@ -19,6 +19,7 @@ const (
 )
 
 const timeImport = "time.Time"
+const decimalImport = "BigDecimal"
 
 type (
 	Table struct {
@@ -36,6 +37,7 @@ type (
 		Name         stringx.String
 		DataBaseType string
 		DataType     string
+		JavaDataType string
 		IsPrimaryKey bool
 		IsUniqueKey  bool
 		Comment      string
@@ -127,7 +129,13 @@ func Parse(ddl string) (*Table, error) {
 			return nil, err
 		}
 
+		javaDataType, err := converter.ConvertDateTypeToJavaType(column.Type.Type)
+		if err != nil {
+			return nil, err
+		}
+
 		var field Field
+		field.JavaDataType = javaDataType
 		field.Name = stringx.From(column.Name.String())
 		field.DataBaseType = column.Type.Type
 		field.DataType = dataType
@@ -162,6 +170,15 @@ func (t *Table) ContainsTime() bool {
 	return false
 }
 
+func (t *Table) ContainsDecimal() bool {
+	for _, item := range t.Fields {
+		if strings.ReplaceAll(item.JavaDataType, "*", "") == decimalImport {
+			return true
+		}
+	}
+	return false
+}
+
 func ConvertColumn(db, table string, in []*model.Column) (*Table, error) {
 	var reply Table
 	reply.Name = stringx.From(table)
@@ -186,10 +203,16 @@ func ConvertColumn(db, table string, in []*model.Column) (*Table, error) {
 		return nil, err
 	}
 
+	primaryFtJava, err := converter.ConvertDateTypeToJavaType(primaryColumn.DataType)
+	if err != nil {
+		return nil, err
+	}
+
 	primaryField := Field{
 		Name:         stringx.From(primaryColumn.Name),
 		DataBaseType: primaryColumn.DataType,
 		DataType:     primaryFt,
+		JavaDataType: primaryFtJava,
 		IsUniqueKey:  true,
 		IsPrimaryKey: true,
 		Comment:      primaryColumn.Comment,
@@ -206,10 +229,16 @@ func ConvertColumn(db, table string, in []*model.Column) (*Table, error) {
 				return nil, err
 			}
 
+			dtJava, err := converter.ConvertDateTypeToJavaType(primaryColumn.DataType)
+			if err != nil {
+				return nil, err
+			}
+
 			f := Field{
 				Name:         stringx.From(item.Name),
 				DataBaseType: item.DataType,
 				DataType:     dt,
+				JavaDataType: dtJava,
 				IsPrimaryKey: primaryColumn.Name == item.Name,
 				Comment:      item.Comment,
 			}

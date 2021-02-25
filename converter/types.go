@@ -40,6 +40,40 @@ var (
 		"json":       "string",
 	}
 
+	javaMysqlDataTypeMap = map[string]string{
+		// For consistency, all integer types are converted to Integer
+		// number
+		"bool":      "Integer",
+		"boolean":   "Integer",
+		"tinyint":   "Integer",
+		"smallint":  "Integer",
+		"mediumint": "Integer",
+		"int":       "Integer",
+		"integer":   "Integer",
+		"bigint":    "Integer",
+		"float":     "Float",
+		"double":    "Double",
+		"decimal":   "BigDecimal",
+		// date&time
+		"date":      "String",
+		"datetime":  "String",
+		"timestamp": "String",
+		"time":      "String",
+		"year":      "Integer",
+		// String
+		"char":       "String",
+		"varchar":    "String",
+		"binary":     "String",
+		"varbinary":  "String",
+		"tinytext":   "String",
+		"text":       "String",
+		"mediumtext": "String",
+		"longtext":   "String",
+		"enum":       "String",
+		"set":        "String",
+		"json":       "String",
+	}
+
 	entMysqlDataTypeMap = map[string]string{
 		// For consistency, all integer types are converted to int64
 		// number
@@ -74,6 +108,15 @@ var (
 		"json":       "field.JSON(\"%s\", %s).StorageKey(\"%s\")",
 	}
 )
+
+func ConvertDateTypeToJavaType(dataBaseType string) (string, error) {
+	tp, ok := javaMysqlDataTypeMap[strings.ToLower(dataBaseType)]
+	if !ok {
+		return "", fmt.Errorf("unexpected database type: %s", dataBaseType)
+	}
+
+	return tp, nil
+}
 
 func ConvertDataTypeToEntType(dataBaseType string, name string, colName string, enumOrJson ...string) (string, error) {
 	tp, ok := entMysqlDataTypeMap[strings.ToLower(dataBaseType)]

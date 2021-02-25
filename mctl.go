@@ -35,6 +35,10 @@ var (
 									Usage: "the target dir",
 								},
 								cli.StringFlag{
+									Name:  "pkg, p",
+									Usage: "the java package",
+								},
+								cli.StringFlag{
 									Name:  "style",
 									Usage: "the file naming format, see [https://github.com/tal-tech/go-zero/tree/master/tools/goctl/config/readme.md]",
 								},
@@ -60,6 +64,10 @@ var (
 								cli.StringFlag{
 									Name:  "dir, d",
 									Usage: "the target dir",
+								},
+								cli.StringFlag{
+									Name:  "pkg, p",
+									Usage: "the java package",
 								},
 								cli.StringFlag{
 									Name:  "style",

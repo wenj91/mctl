@@ -1,9 +1,8 @@
 package template
 
-var Imports = `import (
-	"entgo.io/ent"
-	"entgo.io/ent/dialect/entsql"
-	"entgo.io/ent/schema"
-	"entgo.io/ent/schema/field"
-)
+var Imports = `import cn.zzstc.sbp.common.db.AbstractQuery;
+import cn.zzstc.sbp.common.db.Cond;
+import cn.zzstc.sbp.common.db.Op;
+
+{{if .bigdecimal}}import java.math.BigDecimal;{{end}}
 `
