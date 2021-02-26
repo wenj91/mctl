@@ -58,6 +58,8 @@ func genFieldMethod(table Table) (string, error) {
 		buf, err := util.With("fieldMethod").Parse(text).Execute(map[string]interface{}{
 			"upperStartCamelObject":    camelTableName,
 			"lowerStartCamelFieldName": stringx.From(camelFieldName).Untitle(),
+			"in":                       "",
+			"normal":                   true,
 			"op":                       "",
 			"fieldJavaType":            fieldJavaType,
 			"field":                    fieldName.Source(),
@@ -76,9 +78,22 @@ func genFieldMethod(table Table) (string, error) {
 				continue
 			}
 
+			normal := true
+
+			in := ""
+			if op == "In" || op == "NotIn" {
+				in = "..."
+			}
+
+			if op == "IsNull" || op == "NotNull" || op == "OrderByAsc" || op == "OrderByDesc" {
+				normal = false
+			}
+
 			buf2, err := util.With("fieldMethod").Parse(text).Execute(map[string]interface{}{
 				"upperStartCamelObject":    camelTableName,
 				"lowerStartCamelFieldName": stringx.From(camelFieldName).Untitle(),
+				"in":                       in,
+				"normal":                   normal,
 				"op":                       op,
 				"fieldJavaType":            fieldJavaType,
 				"field":                    fieldName.Source(),
