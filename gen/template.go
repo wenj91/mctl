@@ -16,9 +16,11 @@ const (
 	queryTemplateFile       = "query.tpl"
 	queryMethodTemplateFile = "queryMethod.tpl"
 	fieldMethodTemplateFile = "fieldMethod.tpl"
+	fieldsTemplateFile      = "fields.tpl"
 )
 
 var templates = map[string]string{
+	fieldsTemplateFile:      template.Fields,
 	importsTemplateFile:     template.Imports,
 	tableTemplateFile:       template.Table,
 	queryTemplateFile:       template.Query,

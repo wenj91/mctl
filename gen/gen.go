@@ -177,6 +177,11 @@ func (g *defaultGenerator) genModel(in parser.Table) (string, error) {
 		return "", err
 	}
 
+	fieldsCode, err := genFields(table)
+	if err != nil {
+		return "", err
+	}
+
 	queryMethodCode, err := genQueryMethod(table)
 	if err != nil {
 		return "", err
@@ -193,6 +198,7 @@ func (g *defaultGenerator) genModel(in parser.Table) (string, error) {
 		"imports":               importsCode,
 		"upperStartCamelObject": camelTableName,
 		"table":                 tableCode,
+		"fields":                fieldsCode,
 		"queryMethod":           queryMethodCode,
 		"fieldMethods":          fieldMethodCode,
 	})

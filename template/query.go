@@ -9,6 +9,7 @@ public class {{.upperStartCamelObject}}Query extends AbstractQuery {
     private {{.upperStartCamelObject}} Query() {}
 
 {{.table}}
+{{.fields}}
 
 {{.queryMethod}}
 
