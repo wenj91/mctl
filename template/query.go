@@ -6,7 +6,7 @@ package {{.pkg}};
 {{.imports}}
 public class {{.upperStartCamelObject}}Query extends AbstractQuery {
 
-    private {{.upperStartCamelObject}} Query() {}
+    private {{.upperStartCamelObject}}Query() {}
 
 {{.table}}
 {{.fields}}
