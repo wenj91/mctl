@@ -5,4 +5,5 @@ import cn.zzstc.sbp.common.db.Cond;
 import cn.zzstc.sbp.common.db.Op;
 
 {{if .bigdecimal}}import java.math.BigDecimal;{{end}}
+import java.util.List;
 `
