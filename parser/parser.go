@@ -197,7 +197,7 @@ func ConvertColumn(db, table string, in []*model.Column) (*Table, error) {
 	}
 
 	primaryColumn := primaryColumns[0]
-	isDefaultNull := primaryColumn.ColumnDefault == nil && primaryColumn.IsNullAble == "YES"
+	isDefaultNull := true
 	primaryFt, err := converter.ConvertDataType(primaryColumn.DataType, isDefaultNull)
 	if err != nil {
 		return nil, err
@@ -229,7 +229,7 @@ func ConvertColumn(db, table string, in []*model.Column) (*Table, error) {
 				return nil, err
 			}
 
-			dtJava, err := converter.ConvertDateTypeToJavaType(primaryColumn.DataType)
+			dtJava, err := converter.ConvertDateTypeToJavaType(item.DataType)
 			if err != nil {
 				return nil, err
 			}
